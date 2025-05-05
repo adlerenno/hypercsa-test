@@ -329,9 +329,9 @@ rule download_friendster:
 
 rule download_other_data_sets:
     output:
-        'hyperedges-senate-committees.txt',
-        'hyperedges-stackoverflow-answers.txt',
-        'hyperedges-walmart-trips.txt'
+        'data/hyperedges-senate-committees.txt',
+        'data/hyperedges-stackoverflow-answers.txt',
+        'data/hyperedges-walmart-trips.txt'
     shell:
         """
         cd data
