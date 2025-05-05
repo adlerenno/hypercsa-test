@@ -8,7 +8,7 @@ def convert_to_adjacency_hypergraph(input_path, output_path):
 
     with open(input_path, 'r') as f:
         for hyperedge_id, line in enumerate(f):
-            nodes = [int(x) - 1 for x in line.strip().split()]
+            nodes = [int(x) - 1 for x in line.strip().split(', ')]
             hyperedges.append(nodes)
             for node in nodes:
                 vertex_to_hyperedges[node].append(hyperedge_id)
