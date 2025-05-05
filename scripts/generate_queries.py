@@ -60,9 +60,8 @@ def generate_queries_k(input_graph, output_path, num_queries, k):
             queries.add(subset)
         attempts += 1
 
-    file_path = output_path[:-2] + f'_c_{k}'
-    with open(file_path, 'w') as f:
+    with open(output_path, 'w') as f:
         for query in queries:
             f.write(','.join(map(str, query)) + '\n')
 
-    print(f"Generated {len(queries)} queries of length {k} into {file_path}")
+    print(f"Generated {len(queries)} queries of length {k} into {output_path}")
