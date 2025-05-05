@@ -58,7 +58,7 @@ def generate_queries(input_graph, output_path, num_queries, max_query_len):
                 queries.add(subset)
             attempts += 1
 
-        file_path = output_path + f'_c_{k}.txt'
+        file_path = output_path[:-2] + f'_c_{k}.txt'
         with open(file_path, 'w') as f:
             for query in queries:
                 f.write(','.join(map(str, query)) + '\n')

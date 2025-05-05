@@ -33,8 +33,8 @@ DATA_SETS = [
 ]
 QUERY_LENGTH_OF_DATA_SET = {
     'hyperedges-senate-committees.txt':15,
-    'com-orkut.txt':100,
-    'com-friendster.txt':100,
+    'com-orkut.txt':20,
+    'com-friendster.txt':25,
     'hyperedges-stackoverflow-answers.txt':150,
     'hyperedges-walmart-trips.txt':15,
 }
