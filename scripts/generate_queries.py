@@ -16,7 +16,7 @@ def read_hypergraph(file_path):
     return list(hyperedges), list(all_nodes)
 
 
-def generate_queries(input_graph, output_path, num_queries, max_query_len):
+def generate_queries(input_graph, output_path, num_queries):
     hyperedges, all_nodes = read_hypergraph(input_graph)
     half = num_queries // 2
     exact_matches = random.choices(hyperedges, k=half)
@@ -44,23 +44,25 @@ def generate_queries(input_graph, output_path, num_queries, max_query_len):
             out.write(','.join(map(str, query)) + '\n')
 
     print(f"Generated {len(exact_matches)} matching queries and {len(fake_queries)} non-matching queries into {output_path}")
-    queries_per_length = num_queries // max_query_len
 
-    for k in range(1, max_query_len + 1):
-        queries = set()
-        attempts = 0
-        max_attempts = queries_per_length * 10
 
-        while len(queries) < queries_per_length and attempts < max_attempts:
-            edge = random.choice(hyperedges)
-            if len(edge) >= k:
-                subset = tuple(sorted(random.sample(edge, k)))
-                queries.add(subset)
-            attempts += 1
+def generate_queries_k(input_graph, output_path, num_queries, k):
+    hyperedges, all_nodes = read_hypergraph(input_graph)
 
-        file_path = output_path[:-2] + f'_c_{k}'
-        with open(file_path, 'w') as f:
-            for query in queries:
-                f.write(','.join(map(str, query)) + '\n')
+    queries = set()
+    attempts = 0
+    max_attempts = num_queries * 10
 
-        print(f"Generated {len(queries)} queries of length {k} into {file_path}")
+    while len(queries) < num_queries and attempts < max_attempts:
+        edge = random.choice(hyperedges)
+        if len(edge) >= k:
+            subset = tuple(sorted(random.sample(edge, k)))
+            queries.add(subset)
+        attempts += 1
+
+    file_path = output_path[:-2] + f'_c_{k}'
+    with open(file_path, 'w') as f:
+        for query in queries:
+            f.write(','.join(map(str, query)) + '\n')
+
+    print(f"Generated {len(queries)} queries of length {k} into {file_path}")
