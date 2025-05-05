@@ -283,9 +283,9 @@ rule download_orkut:
     shell:
         """
         cd data
-        URL="https://snap.stanford.edu/data/bigdata/communities/com-orkut.ungraph.txt.gz"
-        FILENAME="com-orkut.ungraph.txt.gz"
-        TXT_FILE="com-orkut.ungraph.txt"
+        URL="https://snap.stanford.edu/data/bigdata/communities/com-orkut.all.cmty.txt.gz"
+        FILENAME="com-orkut.all.cmty.txt.gz"
+        TXT_FILE="com-orkut.all.cmty.txt"
         CSV_FILE="com-orkut.txt"
         if [ ! -f "$FILENAME" ]; then
             curl -O "$URL"
@@ -308,9 +308,9 @@ rule download_friendster:
     shell:
         """
         cd data
-        URL="https://snap.stanford.edu/data/bigdata/communities/com-friendster.ungraph.txt.gz"
-        FILENAME="com-friendster.ungraph.txt.gz"
-        TXT_FILE="com-friendster.ungraph.txt"
+        URL="https://snap.stanford.edu/data/bigdata/communities/com-friendster.all.cmty.txt.gz"
+        FILENAME="com-friendster.all.cmty.txt.gz"
+        TXT_FILE="com-friendster.all.cmty.txt"
         CSV_FILE="com-friendster.txt"
         if [ ! -f "$FILENAME" ]; then
             curl -O "$URL"
