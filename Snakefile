@@ -224,7 +224,7 @@ rule build_hypercsa:
         rm -rf hypercsa
         git clone https://github.com/simongog/sdsl-lite.git
         cd sdsl-lite
-        ./install.sh /usr/local/
+        sudo ./install.sh /usr/local/
         cd ..
         git clone https://github.com/adlerenno/hypercsa
         cd hypercsa
