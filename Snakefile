@@ -220,7 +220,12 @@ rule build_hypercsa:
         script = 'hypercsa/build/hypercsa-cli'
     shell:
         """
+        rm -rf sdsl-lite
         rm -rf hypercsa
+        git clone https://github.com/simongog/sdsl-lite.git
+        cd sdsl-lite
+        ./install.sh /usr/local/
+        cd ..
         git clone https://github.com/adlerenno/hypercsa
         cd hypercsa
         mkdir -p build
@@ -234,6 +239,7 @@ rule build_ligra:
         script = 'ligra/apps/hypergraphEncoder'
     shell:
         """
+        rm -rf ligra
         git clone https://github.com/jshun/ligra
         cd ligra/apps
         make -j$(nproc)
