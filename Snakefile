@@ -344,8 +344,8 @@ rule download_other_data_sets:
     shell:
         """
         cd data
-        git clone https://git.cs.uni-paderborn.de/eadler/datase-ts-hypercsa-test.git
-        python3 normalize_to_csv.py hyperedges-senate-committees.txt senate-committees.txt
-        python3 normalize_to_csv.py hyperedges-stackoverflow-answers.txt stackoverflow-answers.txt
-        python3 normalize_to_csv.py hyperedges-walmart-trips.txt walmart-trips.txt
+        git clone https://git.cs.uni-paderborn.de/eadler/datasets-hypercsa-test.git
+        python3 normalize_to_csv.py datasets-hypercsa-test/hyperedges-senate-committees.txt senate-committees.txt
+        python3 normalize_to_csv.py datasets-hypercsa-test/hyperedges-stackoverflow-answers.txt stackoverflow-answers.txt
+        python3 normalize_to_csv.py datasets-hypercsa-test/hyperedges-walmart-trips.txt walmart-trips.txt
         """
