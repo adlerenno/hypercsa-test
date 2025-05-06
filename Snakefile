@@ -25,18 +25,18 @@ APPROACHES_QUERIES = [
 ]
 
 DATA_SETS = [
-    'hyperedges-senate-committees.txt',
+    'senate-committees.txt',
     'com-orkut.txt',
     'com-friendster.txt',
-    'hyperedges-stackoverflow-answers.txt',
-    'hyperedges-walmart-trips.txt'
+    'stackoverflow-answers.txt',
+    'walmart-trips.txt'
 ]
 QUERY_LENGTH_OF_DATA_SET = {
-    'hyperedges-senate-committees.txt':15,
+    'senate-committees.txt':15,
     'com-orkut.txt':20,
     'com-friendster.txt':25,
-    'hyperedges-stackoverflow-answers.txt':150,
-    'hyperedges-walmart-trips.txt':15,
+    'stackoverflow-answers.txt':150,
+    'walmart-trips.txt':15,
 }
 
 FILES = [f'indicators/{file}.{approach}'
@@ -308,7 +308,7 @@ rule download_orkut:
         else
             echo "Error: $FILENAME not found!"
         fi
-        grep -v '^#' "$TXT_FILE" | tr '\t' ',' > "$CSV_FILE"
+        python3 normalize_to_csv.py "$TXT_FILE" "$CSV_FILE"
         """
 
 rule download_friendster:
@@ -333,16 +333,19 @@ rule download_friendster:
         else
             echo "Error: $FILENAME not found!"
         fi
-        grep -v '^#' "$TXT_FILE" | tr '\t' ',' > "$CSV_FILE"
+        python3 normalize_to_csv.py "$TXT_FILE" "$CSV_FILE"
         """
 
 rule download_other_data_sets:
     output:
-        'data/hyperedges-senate-committees.txt',
+        'data/senate-committees.txt',
         'data/hyperedges-stackoverflow-answers.txt',
         'data/hyperedges-walmart-trips.txt'
     shell:
         """
         cd data
         git clone https://git.cs.uni-paderborn.de/eadler/datase-ts-hypercsa-test.git
+        python3 normalize_to_csv.py hyperedges-senate-committees.txt senate-committees.txt
+        python3 normalize_to_csv.py hyperedges-stackoverflow-answers.txt stackoverflow-answers.txt
+        python3 normalize_to_csv.py hyperedges-walmart-trips.txt walmart-trips.txt
         """
