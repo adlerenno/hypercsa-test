@@ -16,8 +16,8 @@ RESULT = './results/'
 
 APPROACHES = [
     'hypercsa',
-    'ligra',
-    'hypernetx'
+#    'ligra',
+#    'hypernetx'
 ]
 APPROACHES_QUERIES = [
     'hypercsa',
