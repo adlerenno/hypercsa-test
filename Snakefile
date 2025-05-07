@@ -312,7 +312,7 @@ rule download_orkut:
         else
             echo "Error: $FILENAME not found!"
         fi
-        python3 normalize_to_csv.py "$TXT_FILE" "$CSV_FILE"
+        python3 ../scripts/normalize_to_csv.py "$TXT_FILE" "$CSV_FILE"
         """
 
 rule download_friendster:
@@ -341,7 +341,7 @@ rule download_friendster:
         else
             echo "Error: $FILENAME not found!"
         fi
-        python3 normalize_to_csv.py "$TXT_FILE" "$CSV_FILE"
+        python3 ../scripts/normalize_to_csv.py "$TXT_FILE" "$CSV_FILE"
         """
 
 rule download_other_data_sets:
@@ -353,7 +353,7 @@ rule download_other_data_sets:
         """
         cd data
         git clone https://git.cs.uni-paderborn.de/eadler/datasets-hypercsa-test.git
-        python3 normalize_to_csv.py datasets-hypercsa-test/hyperedges-senate-committees.txt senate-committees.txt
-        python3 normalize_to_csv.py datasets-hypercsa-test/hyperedges-stackoverflow-answers.txt stackoverflow-answers.txt
-        python3 normalize_to_csv.py datasets-hypercsa-test/hyperedges-walmart-trips.txt walmart-trips.txt
+        python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-senate-committees.txt senate-committees.txt
+        python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-stackoverflow-answers.txt stackoverflow-answers.txt
+        python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-walmart-trips.txt walmart-trips.txt
         """
