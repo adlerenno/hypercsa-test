@@ -304,7 +304,11 @@ rule download_orkut:
         
         # Unzip the file
         if [ -f "$FILENAME" ]; then
-            gunzip -k "$FILENAME"  # Use -k to keep the original .gz file
+            if [ -f "$TXT_FILE" ]; then
+                gunzip -k "$FILENAME"  # Use -k to keep the original .gz file
+            else
+                echo "$TXT_FILE exists. Skipping decompression."
+            fi
         else
             echo "Error: $FILENAME not found!"
         fi
@@ -329,7 +333,11 @@ rule download_friendster:
         
         # Unzip the file
         if [ -f "$FILENAME" ]; then
-            gunzip -k "$FILENAME"  # Use -k to keep the original .gz file
+            if [ -f "$TXT_FILE" ]; then
+                gunzip -k "$FILENAME"  # Use -k to keep the original .gz file
+            else
+                echo "$TXT_FILE exists. Skipping decompression."
+            fi
         else
             echo "Error: $FILENAME not found!"
         fi
