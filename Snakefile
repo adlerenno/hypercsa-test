@@ -339,8 +339,8 @@ rule download_friendster:
 rule download_other_data_sets:
     output:
         'data/senate-committees.txt',
-        'data/hyperedges-stackoverflow-answers.txt',
-        'data/hyperedges-walmart-trips.txt'
+        'data/stackoverflow-answers.txt',
+        'data/walmart-trips.txt'
     shell:
         """
         cd data
