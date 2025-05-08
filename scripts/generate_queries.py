@@ -46,7 +46,7 @@ def generate_queries(input_graph, output_path, num_queries, k):
     print(f"Generated {len(exact_matches)} matching queries and {len(fake_queries)} non-matching queries into {output_path}")
 
 
-def generate_queries_k(input_graph, output_path, num_queries, k):
+def generate_queries_k(input_graph, output_path, num_queries, k=1):
     hyperedges, all_nodes = read_hypergraph(input_graph)
 
     queries = set()
