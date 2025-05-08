@@ -16,7 +16,7 @@ def read_hypergraph(file_path):
     return list(hyperedges), list(all_nodes)
 
 
-def generate_queries(input_graph, output_path, num_queries, k):
+def generate_queries(input_graph, output_path, num_queries, k=1):
     hyperedges, all_nodes = read_hypergraph(input_graph)
     half = num_queries // 2
     exact_matches = random.choices(hyperedges, k=half)
