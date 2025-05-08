@@ -6,9 +6,7 @@ def parse_filename():
     pass
 
 
-def get_success_indicator(filename):
-    if 'partdna' in filename:
-        return '1'
+def get_success_indicator(filename) -> str:
     if os.path.isfile(filename):
         with open(filename, 'r') as f:
             for line in f:
@@ -18,36 +16,48 @@ def get_success_indicator(filename):
         return '0'
         # raise FileNotFoundError(f'File indicators/{filename}.{file_extension}.{approach} not found.')
 
-def combine_comp(FILES, DATA_SETS, APPROACHES, out_file):
+
+def combine_comp(DATA_SETS, APPROACHES, out_file):
     with open(out_file, "w") as f:
         writer = csv.writer(f, delimiter="\t")
-        writer.writerow(['algorithm', 'dataset', 'successful', 's', 'h:m:s', 'max_rss', 'max_vms', 'max_uss', 'max_pss', 'io_in', 'io_out', 'mean_load', 'cpu_time'])
+        writer.writerow(['algorithm', 'dataset', 'successful', 'original_file_size', 'compressed_file_size', 's', 'h:m:s', 'max_rss', 'max_vms', 'max_uss', 'max_pss', 'io_in', 'io_out', 'mean_load', 'cpu_time'])
         for data_set in DATA_SETS:
             for approach in APPROACHES:
                 bench = f'bench/{data_set}.{approach}.csv'
                 indicator = get_success_indicator(f'indicators/{data_set}.{approach}')
-                file_original_size = os.path.getsize('')
-                file_compressed_size = os.path.getsize('')
+                file_original_size = os.path.getsize(f'data/{data_set}')
+                file_compressed_size = os.path.getsize(f'compressed/{approach}/{data_set}')
                 if not isfile(bench):
                     raise FileNotFoundError(f'Benchmark file "{bench}" does not exist.')
                 with open(bench, 'r') as g:
                     reader = csv.reader(g, delimiter="\t")
                     next(reader)  # Headers line
-                    writer.writerow([approach, data_set, indicator] + next(reader))
+                    writer.writerow([approach, data_set, indicator, str(file_original_size), str(file_compressed_size)] + next(reader))
 
-def combine_query(FILES, DATA_SETS, APPROACHES, out_file):
+
+def combine_query(DATA_SETS, APPROACHES, QUERY_LENGTH_OF_DATA_SET, out_file):
     with open(out_file, "w") as f:
         writer = csv.writer(f, delimiter="\t")
         writer.writerow(
-            ['algorithm', 'dataset', 'successful', 's', 'h:m:s', 'max_rss', 'max_vms', 'max_uss', 'max_pss', 'io_in',
+            ['algorithm', 'dataset', 'type', 'successful', 's', 'h:m:s', 'max_rss', 'max_vms', 'max_uss', 'max_pss', 'io_in',
              'io_out', 'mean_load', 'cpu_time'])
         for data_set in DATA_SETS:
             for approach in APPROACHES:
-                bench = f'bench/{data_set}.{approach}.csv'
-                indicator = get_success_indicator(f'indicators/{data_set}.{approach}')
-                if not isfile(bench):
-                    raise FileNotFoundError(f'Benchmark file "{bench}" does not exist.')
-                with open(bench, 'r') as g:
+                bench_exact = f'bench/{data_set}.{approach}.exact.csv'
+                indicator_exact = get_success_indicator(f'indicators/{data_set}.{approach}.exact')
+                if not isfile(bench_exact):
+                    raise FileNotFoundError(f'Benchmark file "{bench_exact}" does not exist.')
+                with open(bench_exact, 'r') as g:
                     reader = csv.reader(g, delimiter="\t")
                     next(reader)  # Headers line
-                    writer.writerow([approach, data_set, indicator] + next(reader))
+                    writer.writerow([approach, data_set, 'exact', indicator_exact] + next(reader))
+
+                for k in range(QUERY_LENGTH_OF_DATA_SET[data_set]):
+                    bench_contains = f'bench/{data_set}.{approach}.contains.{k}.csv'
+                    indicator_contains = get_success_indicator(f'indicators/{data_set}.{approach}.contains.{k}')
+                    if not isfile(bench_contains):
+                        raise FileNotFoundError(f'Benchmark file "{bench_contains}" does not exist.')
+                    with open(bench_exact, 'r') as g:
+                        reader = csv.reader(g, delimiter="\t")
+                        next(reader)  # Headers line
+                        writer.writerow([approach, data_set, str(k), indicator_contains] + next(reader))

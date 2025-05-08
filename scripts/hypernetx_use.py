@@ -35,3 +35,25 @@ def run_containment_queries(hypergraph_file: str, query_file: str):
         for line_num, line in enumerate(f, 1):
             query_nodes = set(map(int, line.strip().split(',')))
             matching_edges = [e for e in H.edges if query_nodes.issubset(H.edges[e])]
+            print(f'Query {line_num} has {len(matching_edges)} results.')
+
+
+def run_exact_queries(hypergraph_file: str, query_file: str):
+    """
+    Loads a compressed hypergraph and runs node-set containment queries from a query file.
+    Each line in the query file should be a comma-separated list of integers.
+    """
+    # Load compressed hypergraph
+    with open(hypergraph_file, 'rb') as f:
+        H = pickle.load(f)
+
+    with open(query_file, 'r') as f:
+        for line_num, line in enumerate(f, 1):
+            query_nodes = set(map(int, line.strip().split(',')))
+            for e in H.edges:
+                if set(e) == query_nodes:
+                    print(f'Query {line_num} has 1 results.')
+                    break
+            else:
+                print(f'Query {line_num} has 0 results.')
+

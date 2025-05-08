@@ -73,7 +73,7 @@ rule get_comp_results:
         python3 scripts/collect_benchmarks.py bench {output.bench}
         """
         from scripts.collect_benchmark import combine_comp
-        combine_comp(FILES, DATA_SETS, APPROACHES, output.bench)
+        combine_comp(DATA_SETS, APPROACHES, output.bench)
 
 rule get_query_results:
     input:
@@ -82,7 +82,7 @@ rule get_query_results:
         bench = 'results/query_benchmark.csv'
     run:
         from scripts.collect_benchmark import combine_query
-        combine_query(FILES_QUERIES, DATA_SETS, APPROACHES, output.bench)
+        combine_query(DATA_SETS, APPROACHES, QUERY_LENGTH_OF_DATA_SET, output.bench)
 
 
 rule clean:
@@ -109,7 +109,7 @@ rule hypercsa_exact_queries:
     benchmark: 'bench/{filename}.hypercsa.exact.csv'
     shell:
         """
-        if {input.script} -i {input.source} -t 0 -f {input.queries}; then 
+        if {input.script} -i compressed/hypercsa/{wildcards.filename} -t 0 -f {input.queries}; then 
         echo 1 > {output.indicator}
         else
         echo 0 > {output.indicator}
@@ -128,7 +128,7 @@ rule hypercsa_contains_queries:
     benchmark: 'bench/{filename}.hypercsa.contains.{k}.csv'
     shell:
         """
-        if {input.script} -i {input.source} -t 1 -f {input.queries}; then 
+        if {input.script} -i compressed/hypercsa/{wildcards.filename} -t 1 -f {input.queries}; then 
         echo 1 > {output.indicator}
         else
         echo 0 > {output.indicator}
@@ -147,8 +147,8 @@ rule hypernetx_exact_queries:
         threads = NUMBER_OF_PROCESSORS
     benchmark: 'bench/{filename}.hypernetx.exact.csv'
     run:
-        from hypernetx_use import run_containment_queries
-        run_containment_queries(f'compressed/hypernetx/{wildcards.filename}', input.queries)
+        from scripts.hypernetx_use import run_exact_queries
+        run_exact_queries(f'compressed/hypernetx/{wildcards.filename}', input.queries)
 
 rule hypernetx_contains_queries:
     input:
@@ -161,7 +161,7 @@ rule hypernetx_contains_queries:
         threads = NUMBER_OF_PROCESSORS
     benchmark: 'bench/{filename}.hypernetx.contains.{k}.csv'
     run:
-        from hypernetx_use import run_containment_queries
+        from scripts.hypernetx_use import run_containment_queries
         run_containment_queries(f'compressed/hypernetx/{wildcards.filename}', input.queries)
 
 rule hypercsa:
@@ -206,7 +206,7 @@ rule hypernetx:
         threads = NUMBER_OF_PROCESSORS
     benchmark: 'bench/{filename}.hypernetx.csv'
     run:
-        from hypernetx_use import compress_hypergraph
+        from scripts.hypernetx_use import compress_hypergraph
         try:
             compress_hypergraph(input.source, f'compressed/hypernetx/{wildcards.filename}')
             with open(output.indicator, 'w') as out:
@@ -271,7 +271,7 @@ rule generate_exact_queries:
         e_queries_file = 'queries/{file}_e',
     run:
         from scripts.generate_queries import generate_queries
-        generate_queries(input.hypergraph_file, output.e_queries_file, 1000)
+        generate_queries(input.hypergraph_file, output.e_queries_file, 100)
 
 
 rule generate_contains_queries: # Collector.
