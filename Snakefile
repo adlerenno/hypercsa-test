@@ -283,7 +283,7 @@ rule generate_contains_queries: # Collector.
     run:
         from scripts.generate_queries import generate_queries_k
         l = QUERY_LENGTH_OF_DATA_SET[wildcards.file]
-        generate_queries_k(input.hypergraph_file, output.c_queries_file, 1000//l, wildcards.k)
+        generate_queries_k(input.hypergraph_file, output.c_queries_file, 1000//l, int(wildcards.k))
 
 
 rule download_orkut:
