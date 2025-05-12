@@ -4,10 +4,10 @@ from collections import defaultdict
 from os.path import exists
 
 
-def normalize_and_convert(input_file, output_file, stats_file):
+def normalize_and_convert(input_file, output_file, stats_file, split_char='\t'):
     # Read all lines and flatten the numbers
     with open(input_file, 'r') as f:
-        lines = [line.strip().split('\t') for line in f if line.strip()]
+        lines = [line.strip().split(split_char) for line in f if line.strip()]
         all_numbers = {int(num) for line in lines for num in line}
 
     # Create mapping from original numbers to 0-based continuous numbers
@@ -25,11 +25,11 @@ def normalize_and_convert(input_file, output_file, stats_file):
                 node_degrees[num] += 1
 
     stats_exists = exists(stats_file)
-    with open(stats_file, 'w+') as f:
+    with open(stats_file, 'a') as f:
         writer = csv.writer(f)
         if not stats_exists:
             writer.writerow(['filename', '|V|', '|E|', 'M', 'max_node_degree'])
-        writer.writerow([output_file, len(node_degrees), len(lines), sum(node_degrees), max(node_degrees)])
+        writer.writerow([output_file, len(node_degrees), len(lines), sum(node_degrees.values()), max(node_degrees.values())])
 
 
 def main():
@@ -38,9 +38,10 @@ def main():
     )
     parser.add_argument("input", help="Path to the input file (tab-separated)")
     parser.add_argument("output", help="Path to the output CSV file")
+    parser.add_argument("split_char", help="Char to split numbers in input file", default='\t')
 
     args = parser.parse_args()
-    normalize_and_convert(args.input, args.output, './../results/stats.csv')
+    normalize_and_convert(args.input, args.output, './../results/stats.csv', args.split_char)
 
 
 if __name__ == "__main__":

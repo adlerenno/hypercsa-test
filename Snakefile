@@ -21,15 +21,15 @@ APPROACHES = [
 ]
 APPROACHES_QUERIES = [
     'hypercsa',
-    'hypernetx'
+#    'hypernetx'
 ]
 
 DATA_SETS = [
     'senate-committees.txt',
-    'com-orkut.txt',
-    'com-friendster.txt',
-    'stackoverflow-answers.txt',
-    'walmart-trips.txt'
+#    'com-orkut.txt',
+#    'com-friendster.txt',
+#    'stackoverflow-answers.txt',
+#    'walmart-trips.txt'
 ]
 QUERY_LENGTH_OF_DATA_SET = {
     'senate-committees.txt':15,
@@ -215,6 +215,22 @@ rule hypernetx:
             with open(output.indicator, 'w') as out:
                 out.write('0')
 
+rule shuffle_coding:
+    input:
+        script='shuffle_coding/target/debug/shuffle_coding',
+        source='data/{filename}.sc'
+    output:
+        indicator = 'indicators/{filename}.shuffle_coding'
+    params:
+        threads = NUMBER_OF_PROCESSORS
+    benchmark: 'bench/{filename}.shuffle_coding.csv'
+    shell:
+        """if {script} --nolabels --stats --threads {params.threads} --source {input.source}; then 
+        echo 1 > {output.indicator}
+        else
+        echo 0 > {output.indicator}
+        fi"""
+
 rule build_hypercsa:
     output:
         script = 'hypercsa/build/hypercsa-cli'
@@ -255,6 +271,26 @@ rule hypernetx_build:
         echo 1 > {output.indicator}
         """
 
+rule build_shuffle_sorting:
+    output:
+        script = 'shuffle_coding/target/debug/shuffle_coding'
+    shell:
+        """
+        rm -rf shuffle-coding
+        if ! command -v rustc &> /dev/null; then
+          echo "Rust is not installed. Installing Rust..."
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          # Source the cargo environment immediately (for current shell)
+          source $HOME/.cargo/env
+        else
+          echo "Rust is already installed: $(rustc --version)"
+        fi
+        git clone https://github.com/juliuskunze/shuffle-coding.git
+        cd shuffle-coding
+        cargo build --release
+        ./shuffle_coding/target/debug/shuffle_coding -V
+        """
+
 rule generate_ligra_files:
     input:
         file = 'data/{filename}'
@@ -263,6 +299,14 @@ rule generate_ligra_files:
     run:
         from scripts.to_hygra_format import convert_to_adjacency_hypergraph
         convert_to_adjacency_hypergraph(input.file, output.ofile)
+
+rule generate_shuffle_coding_files:
+    input:
+        file = 'data/{filename}'
+    output:
+        ofile = 'data/{filename}.sc'
+    shell:
+        """tr ',' ' ' < {input.file} > {output.ofile}"""
 
 rule generate_exact_queries:
     input:
@@ -352,8 +396,12 @@ rule download_other_data_sets:
     shell:
         """
         cd data
-        git clone https://git.cs.uni-paderborn.de/eadler/datasets-hypercsa-test.git
-        python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-senate-committees.txt senate-committees.txt
-        python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-stackoverflow-answers.txt stackoverflow-answers.txt
-        python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-walmart-trips.txt walmart-trips.txt
+        if [ -d "datasets-hypercsa-test" ]; then
+            echo "datasets-hypercsa-test exists. Skipping download."
+        else
+            git clone https://git.cs.uni-paderborn.de/eadler/datasets-hypercsa-test
+        fi
+        python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-senate-committees.txt senate-committees.txt ","
+        python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-stackoverflow-answers.txt stackoverflow-answers.txt ","
+        python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-walmart-trips.txt walmart-trips.txt ","
         """

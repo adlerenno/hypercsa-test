@@ -17,6 +17,13 @@ def get_success_indicator(filename) -> str:
         # raise FileNotFoundError(f'File indicators/{filename}.{file_extension}.{approach} not found.')
 
 
+def get_file_size(filename) -> int:
+    if os.path.isfile(filename):
+        return os.path.getsize(filename)
+    else:
+        return -1
+
+
 def combine_comp(DATA_SETS, APPROACHES, out_file):
     with open(out_file, "w") as f:
         writer = csv.writer(f, delimiter="\t")
@@ -25,8 +32,8 @@ def combine_comp(DATA_SETS, APPROACHES, out_file):
             for approach in APPROACHES:
                 bench = f'bench/{data_set}.{approach}.csv'
                 indicator = get_success_indicator(f'indicators/{data_set}.{approach}')
-                file_original_size = os.path.getsize(f'data/{data_set}')
-                file_compressed_size = os.path.getsize(f'compressed/{approach}/{data_set}')
+                file_original_size = get_file_size(f'data/{data_set}')
+                file_compressed_size = get_file_size(f'compressed/{approach}/{data_set}')
                 if not isfile(bench):
                     raise FileNotFoundError(f'Benchmark file "{bench}" does not exist.')
                 with open(bench, 'r') as g:
