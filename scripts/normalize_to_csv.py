@@ -14,6 +14,7 @@ def normalize_and_convert(input_file, output_file, stats_file, split_char='\t'):
     number_mapping = {num: idx for idx, num in enumerate(all_numbers)}
 
     node_degrees = defaultdict(lambda: 0)
+    max_len = 0
 
     # Apply mapping and write to CSV
     with open(output_file, 'w', newline='') as f:
@@ -21,15 +22,16 @@ def normalize_and_convert(input_file, output_file, stats_file, split_char='\t'):
         for line in lines:
             new_line = [number_mapping[int(num)] for num in line]
             writer.writerow(new_line)
-            for num in line:
+            max_len = max(max_len, len(new_line))
+            for num in new_line:
                 node_degrees[num] += 1
 
     stats_exists = exists(stats_file)
     with open(stats_file, 'a') as f:
         writer = csv.writer(f)
         if not stats_exists:
-            writer.writerow(['filename', '|V|', '|E|', 'M', 'max_node_degree'])
-        writer.writerow([output_file, len(node_degrees), len(lines), sum(node_degrees.values()), max(node_degrees.values())])
+            writer.writerow(['filename', '|V|', '|E|', 'M', 'max_rank', 'max_node_degree'])
+        writer.writerow([output_file, len(node_degrees), len(lines), sum(node_degrees.values()), max_len, max(node_degrees.values())])
 
 
 def main():
