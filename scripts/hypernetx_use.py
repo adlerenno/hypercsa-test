@@ -39,6 +39,7 @@ def run_containment_queries(hypergraph_file: str, query_file: str, indicator_fil
                 matching_edges = [e for e in H.edges if query_nodes.issubset(H.edges[e])]
                 print(f'Query {line_num} has {len(matching_edges)} results.')
     except Exception as e:
+        print(e)
         successful = 0
     with open(indicator_file, 'w') as f:
         f.write(str(successful))
@@ -65,6 +66,7 @@ def run_exact_queries(hypergraph_file: str, query_file: str, indicator_file:str)
                 else:
                     print(f'Query {line_num} has 0 results.')
     except Exception as e:
+        print(e)
         successful = 0
     with open(indicator_file, 'w') as f:
         f.write(str(successful))
