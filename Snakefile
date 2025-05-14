@@ -26,10 +26,10 @@ APPROACHES_QUERIES = [
 
 DATA_SETS = [
     'senate-committees.txt',
-#    'com-orkut.txt',
-#    'com-friendster.txt',
-#    'stackoverflow-answers.txt',
-#    'walmart-trips.txt'
+    'com-orkut.txt',
+    'com-friendster.txt',
+    'stackoverflow-answers.txt',
+    'walmart-trips.txt'
 ]
 QUERY_LENGTH_OF_DATA_SET = {
     'senate-committees.txt':15,
