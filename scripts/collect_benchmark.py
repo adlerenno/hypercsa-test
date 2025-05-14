@@ -44,7 +44,7 @@ def combine_comp(DATA_SETS, APPROACHES, out_file):
 
 
 def combine_query(DATA_SETS, APPROACHES, QUERY_LENGTH_OF_DATA_SET, out_file):
-    with open(out_file, "w") as f:
+    with (open(out_file, "w") as f):
         writer = csv.writer(f, delimiter="\t")
         writer.writerow(
             ['algorithm', 'dataset', 'type', 'query_count', 'successful', 's', 'h:m:s', 'max_rss', 'max_vms', 'max_uss', 'max_pss', 'io_in',
@@ -52,9 +52,7 @@ def combine_query(DATA_SETS, APPROACHES, QUERY_LENGTH_OF_DATA_SET, out_file):
         for data_set in DATA_SETS:
             query_count = defaultdict(lambda: 0)
             for k in range(1, QUERY_LENGTH_OF_DATA_SET[data_set]):
-                with open(f'queries/{data_set}_c_{k}', 'r') as g:
-                    reader = csv.reader(g, delimiter=",")
-                    query_count[k] = reader.line_num
+                query_count[k] = sum(1 for _ in open(f'queries/{data_set}_c_{k}'))
 
             for approach in APPROACHES:
                 bench_exact = f'bench/{data_set}.{approach}.exact.csv'
