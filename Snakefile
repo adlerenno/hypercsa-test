@@ -182,7 +182,7 @@ rule hypercsa:
 
 rule ligra:
     input:
-        script = 'ligra/apps/hypergraphEncoder',
+        script = 'ligra/apps/hyper/hypergraphEncoder',
         source = 'data/{filename}.hygra'
     output:
         indicator = 'indicators/{filename}.ligra'
@@ -253,12 +253,14 @@ rule build_hypercsa:
 
 rule build_ligra:
     output:
-        script = 'ligra/apps/hypergraphEncoder'
+        script = 'ligra/apps/hyper/hypergraphEncoder'
     shell:
         """
         rm -rf ligra
         git clone https://github.com/jshun/ligra
         cd ligra/apps
+        make -j$(nproc)
+        cd hyper
         make -j$(nproc)
         """
 
