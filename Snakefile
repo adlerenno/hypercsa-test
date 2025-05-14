@@ -188,7 +188,7 @@ rule ligra:
         indicator = 'indicators/{filename}.ligra'
     params:
         threads = NUMBER_OF_PROCESSORS
-    benchmark: 'bench/{filename}.hygra.csv'
+    benchmark: 'bench/{filename}.ligra.csv'
     shell:
         """if {input.script} {input.source} compressed/ligra/{wildcards.filename}; then 
         echo 1 > {output.indicator}

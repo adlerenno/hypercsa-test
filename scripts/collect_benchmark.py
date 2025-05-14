@@ -64,7 +64,7 @@ def combine_query(DATA_SETS, APPROACHES, QUERY_LENGTH_OF_DATA_SET, out_file):
                     indicator_contains = get_success_indicator(f'indicators/{data_set}.{approach}.contains.{k}')
                     if not isfile(bench_contains):
                         raise FileNotFoundError(f'Benchmark file "{bench_contains}" does not exist.')
-                    with open(bench_exact, 'r') as g:
+                    with open(bench_contains, 'r') as g:
                         reader = csv.reader(g, delimiter="\t")
                         next(reader)  # Headers line
                         writer.writerow([approach, data_set, str(k), indicator_contains] + next(reader))
