@@ -16,12 +16,12 @@ RESULT = './results/'
 
 APPROACHES = [
     'hypercsa',
-#    'ligra',
-#    'hypernetx'
+    'ligra',
+    'hypernetx'
 ]
 APPROACHES_QUERIES = [
     'hypercsa',
-#    'hypernetx'
+    'hypernetx'
 ]
 
 DATA_SETS = [
