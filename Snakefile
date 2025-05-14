@@ -82,7 +82,7 @@ rule get_query_results:
         bench = 'results/query_benchmark.csv'
     run:
         from scripts.collect_benchmark import combine_query
-        combine_query(DATA_SETS, APPROACHES, QUERY_LENGTH_OF_DATA_SET, output.bench)
+        combine_query(DATA_SETS, APPROACHES_QUERIES, QUERY_LENGTH_OF_DATA_SET, output.bench)
 
 
 rule clean:
