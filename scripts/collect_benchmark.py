@@ -59,7 +59,7 @@ def combine_query(DATA_SETS, APPROACHES, QUERY_LENGTH_OF_DATA_SET, out_file):
                     next(reader)  # Headers line
                     writer.writerow([approach, data_set, 'exact', indicator_exact] + next(reader))
 
-                for k in range(QUERY_LENGTH_OF_DATA_SET[data_set]):
+                for k in range(1, QUERY_LENGTH_OF_DATA_SET[data_set]):
                     bench_contains = f'bench/{data_set}.{approach}.contains.{k}.csv'
                     indicator_contains = get_success_indicator(f'indicators/{data_set}.{approach}.contains.{k}')
                     if not isfile(bench_contains):
