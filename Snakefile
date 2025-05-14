@@ -148,7 +148,7 @@ rule hypernetx_exact_queries:
     benchmark: 'bench/{filename}.hypernetx.exact.csv'
     run:
         from scripts.hypernetx_use import run_exact_queries
-        run_exact_queries(f'compressed/hypernetx/{wildcards.filename}', input.queries)
+        run_exact_queries(f'compressed/hypernetx/{wildcards.filename}', input.queries, output.indicator)
 
 rule hypernetx_contains_queries:
     input:
@@ -162,7 +162,7 @@ rule hypernetx_contains_queries:
     benchmark: 'bench/{filename}.hypernetx.contains.{k}.csv'
     run:
         from scripts.hypernetx_use import run_containment_queries
-        run_containment_queries(f'compressed/hypernetx/{wildcards.filename}', input.queries)
+        run_containment_queries(f'compressed/hypernetx/{wildcards.filename}', input.queries, output.indicator)
 
 rule hypercsa:
     input:
