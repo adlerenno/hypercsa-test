@@ -1,5 +1,6 @@
+import numpy as np
+
 import hypernetx as hnx
-import pickle
 
 def compress_hypergraph(input_file: str, output_file: str):
     """
@@ -7,17 +8,24 @@ def compress_hypergraph(input_file: str, output_file: str):
     Each line in the file should contain comma-separated integers representing a hyperedge.
     """
     edges = {}
+    max_node = 0
     with open(input_file, 'r') as f:
         for i, line in enumerate(f):
             nodes = set(map(int, line.strip().split(',')))
             edge_id = f"e{i+1}"
             edges[edge_id] = nodes
+            max_node = max(max_node, max(nodes))
 
     H = hnx.Hypergraph(edges)
 
-    # Compress and save
-    with open(output_file, 'wb') as out:
-        pickle.dump(H, out)
+    incidence_matrix = np.zeros((max_node, len(edges)), dtype=np.uint8)
+
+    for edge, nodes_in_edge in H.incidence_dict.items():
+        for node in nodes_in_edge:
+            incidence_matrix[node, edge] = 1
+    np.savez_compressed(output_file,
+                        incidence_matrix=incidence_matrix,
+                        node_count=[max_node])
 
     print(f"Compressed hypergraph saved to {output_file}")
 
@@ -29,9 +37,16 @@ def run_containment_queries(hypergraph_file: str, query_file: str, indicator_fil
     """
     successful = 1
     try:
-        # Load compressed hypergraph
-        with open(hypergraph_file, 'rb') as f:
-            H = pickle.load(f)
+        data = np.load(hypergraph_file, allow_pickle=True)
+        matrix = data['incidence_matrix']
+        max_node = data['node_count'].tolist()[0]
+
+        # Reconstruct incidence dict
+        incidence_dict = {}
+        for j, edge in enumerate(matrix):
+            incidence_dict[edge] = [i for i in range(max_node) if matrix[i, j] == 1]
+
+        H = hnx.Hypergraph(incidence_dict)
 
         with open(query_file, 'r') as f:
             for line_num, line in enumerate(f, 1):
@@ -52,9 +67,16 @@ def run_exact_queries(hypergraph_file: str, query_file: str, indicator_file:str)
     """
     successful = 1
     try:
-        # Load compressed hypergraph
-        with open(hypergraph_file, 'rb') as f:
-            H = pickle.load(f)
+        data = np.load(hypergraph_file, allow_pickle=True)
+        matrix = data['incidence_matrix']
+        max_node = data['node_count'].tolist()[0]
+
+        # Reconstruct incidence dict
+        incidence_dict = {}
+        for j, edge in enumerate(matrix):
+            incidence_dict[edge] = [i for i in range(max_node) if matrix[i, j] == 1]
+
+        H = hnx.Hypergraph(incidence_dict)
 
         with open(query_file, 'r') as f:
             for line_num, line in enumerate(f, 1):
