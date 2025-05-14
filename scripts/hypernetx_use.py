@@ -1,6 +1,6 @@
 import numpy as np
 
-import hypernetx as hnx
+# import hypernetx as hnx
 
 def compress_hypergraph(input_file: str, output_file: str):
     """
@@ -24,8 +24,7 @@ def compress_hypergraph(input_file: str, output_file: str):
         for node in nodes_in_edge:
             incidence_matrix[node, edge] = 1
     np.savez_compressed(output_file,
-                        incidence_matrix=incidence_matrix,
-                        node_count=[max_node])
+                        incidence_matrix=incidence_matrix)
 
     print(f"Compressed hypergraph saved to {output_file}")
 
@@ -39,19 +38,12 @@ def run_containment_queries(hypergraph_file: str, query_file: str, indicator_fil
     try:
         data = np.load(hypergraph_file, allow_pickle=True)
         matrix = data['incidence_matrix']
-        max_node = data['node_count'].tolist()[0]
-
-        # Reconstruct incidence dict
-        incidence_dict = {}
-        for j, edge in enumerate(matrix):
-            incidence_dict[edge] = [i for i in range(max_node) if matrix[i, j] == 1]
-
-        H = hnx.Hypergraph(incidence_dict)
 
         with open(query_file, 'r') as f:
             for line_num, line in enumerate(f, 1):
                 query_nodes = set(map(int, line.strip().split(',')))
-                matching_edges = [e for e in H.edges if query_nodes.issubset(H.edges[e])]
+                # The all(map(... tests all matrix positions to be 1
+                matching_edges = [e for e in range(len(matrix)) if all(map(lambda node: matrix[e][node], query_nodes))]
                 print(f'Query {line_num} has {len(matching_edges)} results.')
     except Exception as e:
         print(e)
@@ -69,20 +61,12 @@ def run_exact_queries(hypergraph_file: str, query_file: str, indicator_file:str)
     try:
         data = np.load(hypergraph_file, allow_pickle=True)
         matrix = data['incidence_matrix']
-        max_node = data['node_count'].tolist()[0]
-
-        # Reconstruct incidence dict
-        incidence_dict = {}
-        for j, edge in enumerate(matrix):
-            incidence_dict[edge] = [i for i in range(max_node) if matrix[i, j] == 1]
-
-        H = hnx.Hypergraph(incidence_dict)
 
         with open(query_file, 'r') as f:
             for line_num, line in enumerate(f, 1):
                 query_nodes = set(map(int, line.strip().split(',')))
-                for e in H.edges:
-                    if set(e) == query_nodes:
+                for e in range(len(matrix)):
+                    if set(matrix[e]) == query_nodes:
                         print(f'Query {line_num} has 1 results.')
                         break
                 else:
