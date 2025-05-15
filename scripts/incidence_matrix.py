@@ -1,30 +1,25 @@
 import numpy as np
 
-# import hypernetx as hnx
 
 def compress_hypergraph(input_file: str, output_file: str):
     """
     Reads a text file with hyperedges and saves a compressed HyperNetX hypergraph.
     Each line in the file should contain comma-separated integers representing a hyperedge.
     """
-    edges = {}
     max_node = 0
+    lines = 0
     with open(input_file, 'r') as f:
-        for i, line in enumerate(f):
+        for line in f:
+            lines += 1
             nodes = set(map(int, line.strip().split(',')))
-            edge_id = f"e{i+1}"
-            edges[edge_id] = nodes
             max_node = max(max_node, max(nodes))
 
-    H = hnx.Hypergraph(edges)
-
-    incidence_matrix = np.zeros((max_node, len(edges)), dtype=np.uint8)
-
-    for edge, nodes_in_edge in H.incidence_dict.items():
-        for node in nodes_in_edge:
-            incidence_matrix[node, edge] = 1
-    np.savez_compressed(output_file,
-                        incidence_matrix=incidence_matrix)
+    incidence_matrix = np.zeros((max_node, lines), dtype=np.uint8)
+    with open(input_file, 'r') as f:
+        for edge, nodes_in_edge in enumerate(map(lambda x: set(map(int, x.strip().split(','))), f)):
+            for node in nodes_in_edge:
+                incidence_matrix[node, edge] = 1
+    np.savez_compressed(output_file, incidence_matrix=incidence_matrix)
 
     print(f"Compressed hypergraph saved to {output_file}")
 
