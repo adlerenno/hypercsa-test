@@ -63,10 +63,13 @@ def run_exact_queries(hypergraph_file: str, query_file: str, indicator_file:str)
             for line_num, line in enumerate(f, 1):
                 query_nodes = set(map(int, line.strip().split(',')))
                 for e in range(len(matrix)):
-                    if all(map(lambda node: (matrix[e, node] == 0 and node not in query_nodes) or
-                                            (matrix[e, node] == 1 and node in query_nodes), range(0, len(matrix[e])))):
-                        print(f'Query {line_num} has 1 results.')
-                        break
+                    # First check that query is a subset of the nodes of that edge
+                    if all(map(lambda node: matrix[e, node], query_nodes)):
+                        # Then check if sets are equal.
+                        if all(map(lambda node: (matrix[e, node] == 0 and node not in query_nodes) or
+                                                (node in query_nodes), range(0, len(matrix[e])))):
+                            print(f'Query {line_num} has 1 results.')
+                            break
                 else:
                     print(f'Query {line_num} has 0 results.')
     except Exception as e:

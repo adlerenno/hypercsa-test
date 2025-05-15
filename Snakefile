@@ -45,6 +45,9 @@ OMITTED_COMBINATIONS = [
     ('incidence_matrix', 'com-friendster.txt'),
     ('incidence_matrix', 'stackoverflow-answers.txt')
 ]
+OMITTED_QUERY_COMBINATIONS = [
+    ('incidence_matrix', 'com-orkut.txt', 'exact'),
+]
 
 FILES = [f'indicators/{file}.{approach}'
          for approach in APPROACHES
@@ -56,12 +59,14 @@ FILES_QUERIES = [
     for approach in APPROACHES_QUERIES
     for file in DATA_SETS
     if not (approach, file) in OMITTED_COMBINATIONS
+    if not (approach, file, 'exact') in OMITTED_QUERY_COMBINATIONS
 ] + [
     f'indicators/{file}.{approach}.contains.{k}'
     for approach in APPROACHES_QUERIES
     for file in DATA_SETS
     for k in range(1, QUERY_LENGTH_OF_DATA_SET[file])
     if not (approach, file) in OMITTED_COMBINATIONS
+    if not (approach, file, k) in OMITTED_QUERY_COMBINATIONS
 ]
 
 for path in [BENCHMARK, INPUT, TEMP, OUTPUT, INDICATORS, RESULT] + [OUTPUT + approach for approach in APPROACHES]:
