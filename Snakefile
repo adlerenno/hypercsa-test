@@ -262,6 +262,7 @@ rule incidence_matrix:
             with open(output.indicator, 'w') as out:
                 out.write('1')
         except Exception as e:
+            print(e)
             with open(output.indicator, 'w') as out:
                 out.write('0')
 
