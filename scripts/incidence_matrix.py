@@ -14,7 +14,7 @@ def compress_hypergraph(input_file: str, output_file: str):
             nodes = set(map(int, line.strip().split(',')))
             max_node = max(max_node, max(nodes))
 
-    incidence_matrix = np.zeros((max_node, lines), dtype=np.uint8)
+    incidence_matrix = np.zeros((max_node, lines), dtype=np.bool_)
     with open(input_file, 'r') as f:
         for edge, nodes_in_edge in enumerate(map(lambda x: set(map(int, x.strip().split(','))), f)):
             for node in nodes_in_edge:

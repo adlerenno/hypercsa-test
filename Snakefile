@@ -40,20 +40,29 @@ QUERY_LENGTH_OF_DATA_SET = {
     'stackoverflow-answers.txt':150,
     'walmart-trips.txt':15,
 }
+OMITTED_COMBINATIONS = [
+    ('incidence_matrix', 'com-orkut.txt'),
+    ('incidence_matrix', 'com-friendster.txt'),
+    ('incidence_matrix', 'stackoverflow-answers.txt'),
+    ('incidence_matrix', 'walmart-trips.txt')
+]
 
 FILES = [f'indicators/{file}.{approach}'
          for approach in APPROACHES
          for file in DATA_SETS
+         if not (approach, file) in OMITTED_COMBINATIONS
          ]
 FILES_QUERIES = [
     f'indicators/{file}.{approach}.exact'
     for approach in APPROACHES_QUERIES
     for file in DATA_SETS
+    if not (approach, file) in OMITTED_COMBINATIONS
 ] + [
     f'indicators/{file}.{approach}.contains.{k}'
     for approach in APPROACHES_QUERIES
     for file in DATA_SETS
     for k in range(1, QUERY_LENGTH_OF_DATA_SET[file])
+    if not (approach, file) in OMITTED_COMBINATIONS
 ]
 
 for path in [BENCHMARK, INPUT, TEMP, OUTPUT, INDICATORS, RESULT] + [OUTPUT + approach for approach in APPROACHES]:
