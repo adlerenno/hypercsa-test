@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 
 
@@ -20,7 +22,7 @@ def compress_hypergraph(input_file: str, output_file: str):
             for node in nodes_in_edge:
                 incidence_matrix[node, edge] = 1
     np.savez_compressed(output_file, incidence_matrix=incidence_matrix)
-
+    os.rename(output_file + '.npz', output_file)
     print(f"Compressed hypergraph saved to {output_file}")
 
 
