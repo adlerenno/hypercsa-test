@@ -43,8 +43,7 @@ QUERY_LENGTH_OF_DATA_SET = {
 OMITTED_COMBINATIONS = [
     ('incidence_matrix', 'com-orkut.txt'),
     ('incidence_matrix', 'com-friendster.txt'),
-    ('incidence_matrix', 'stackoverflow-answers.txt'),
-    ('incidence_matrix', 'walmart-trips.txt')
+    ('incidence_matrix', 'stackoverflow-answers.txt')
 ]
 
 FILES = [f'indicators/{file}.{approach}'
