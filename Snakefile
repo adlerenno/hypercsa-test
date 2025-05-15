@@ -17,11 +17,13 @@ RESULT = './results/'
 APPROACHES = [
     'hypercsa',
     'ligra',
-    'hypernetx'
+    'incidence_matrix',
+    #'hypernetx'
 ]
 APPROACHES_QUERIES = [
     'hypercsa',
-    'hypernetx'
+    'incidence_matrix',
+    #'hypernetx'
 ]
 
 DATA_SETS = [
@@ -164,6 +166,35 @@ rule hypernetx_contains_queries:
         from scripts.hypernetx_use import run_containment_queries
         run_containment_queries(f'compressed/hypernetx/{wildcards.filename}', input.queries, output.indicator)
 
+
+rule incidence_matrix_exact_queries:
+    input:
+        indicator='indicators/hypernetx_installed',
+        source = 'indicators/{filename}.incidence_matrix',
+        queries = 'queries/{filename}_e'
+    output:
+        indicator = 'indicators/{filename}.incidence_matrix.exact'
+    params:
+        threads = NUMBER_OF_PROCESSORS
+    benchmark: 'bench/{filename}.incidence_matrix.exact.csv'
+    run:
+        from scripts.incidence_matrix import run_exact_queries
+        run_exact_queries(f'compressed/incidence_matrix/{wildcards.filename}', input.queries, output.indicator)
+
+rule incidence_matrix_contains_queries:
+    input:
+        indicator='indicators/hypernetx_installed',
+        source = 'indicators/{filename}.incidence_matrix',
+        queries = 'queries/{filename}_c_{k}'
+    output:
+        indicator = 'indicators/{filename}.incidence_matrix.contains.{k}'
+    params:
+        threads = NUMBER_OF_PROCESSORS
+    benchmark: 'bench/{filename}.incidence_matrix.contains.{k}.csv'
+    run:
+        from scripts.incidence_matrix import run_containment_queries
+        run_containment_queries(f'compressed/incidence_matrix/{wildcards.filename}', input.queries, output.indicator)
+
 rule hypercsa:
     input:
         script = 'hypercsa/build/hypercsa-cli',
@@ -209,6 +240,25 @@ rule hypernetx:
         from scripts.hypernetx_use import compress_hypergraph
         try:
             compress_hypergraph(input.source, f'compressed/hypernetx/{wildcards.filename}')
+            with open(output.indicator, 'w') as out:
+                out.write('1')
+        except Exception as e:
+            with open(output.indicator, 'w') as out:
+                out.write('0')
+
+rule incidence_matrix:
+    input:
+        #indicator = 'indicators/hypernetx_installed',
+        source = 'data/{filename}'
+    output:
+        indicator = 'indicators/{filename}.incidence_matrix'
+    params:
+        threads = NUMBER_OF_PROCESSORS
+    benchmark: 'bench/{filename}.incidence_matrix.csv'
+    run:
+        from scripts.incidence_matrix import compress_hypergraph
+        try:
+            compress_hypergraph(input.source, f'compressed/incidence_matrix/{wildcards.filename}')
             with open(output.indicator, 'w') as out:
                 out.write('1')
         except Exception as e:
