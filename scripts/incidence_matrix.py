@@ -16,11 +16,11 @@ def compress_hypergraph(input_file: str, output_file: str):
             nodes = set(map(int, line.strip().split(',')))
             max_node = max(max_node, max(nodes))
 
-    incidence_matrix = np.zeros((max_node+1, lines), dtype=np.bool_)
+    incidence_matrix = np.zeros((lines, max_node+1), dtype=np.bool_)
     with open(input_file, 'r') as f:
         for edge, nodes_in_edge in enumerate(map(lambda x: set(map(int, x.strip().split(','))), f)):
             for node in nodes_in_edge:
-                incidence_matrix[node, edge] = 1
+                incidence_matrix[edge, node] = 1
     np.savez_compressed(output_file, incidence_matrix=incidence_matrix)
     os.rename(output_file + '.npz', output_file)
     print(f"Compressed hypergraph saved to {output_file}")
@@ -40,7 +40,7 @@ def run_containment_queries(hypergraph_file: str, query_file: str, indicator_fil
             for line_num, line in enumerate(f, 1):
                 query_nodes = set(map(int, line.strip().split(',')))
                 # The all(map(... tests all matrix positions to be 1
-                matching_edges = [e for e in range(len(matrix)) if all(map(lambda node: matrix[e][node], query_nodes))]
+                matching_edges = [e for e in range(len(matrix)) if all(map(lambda node: matrix[e, node], query_nodes))]
                 print(f'Query {line_num} has {len(matching_edges)} results.')
     except Exception as e:
         print(e)
@@ -59,11 +59,12 @@ def run_exact_queries(hypergraph_file: str, query_file: str, indicator_file:str)
         data = np.load(hypergraph_file, allow_pickle=True)
         matrix = data['incidence_matrix']
 
-        with open(query_file, 'r') as f:
+        with (open(query_file, 'r') as f):
             for line_num, line in enumerate(f, 1):
                 query_nodes = set(map(int, line.strip().split(',')))
                 for e in range(len(matrix)):
-                    if set(matrix[e]) == query_nodes:
+                    if all(map(lambda node: (matrix[e, node] == 0 and node not in query_nodes) or
+                                            (matrix[e, node] == 1 and node in query_nodes), range(0, len(matrix[e])))):
                         print(f'Query {line_num} has 1 results.')
                         break
                 else:
