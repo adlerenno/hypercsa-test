@@ -408,7 +408,7 @@ rule download_orkut:
         else
             echo "Error: $FILENAME not found!"
         fi
-        python3 ../scripts/normalize_to_csv.py "$TXT_FILE" "$CSV_FILE"
+        python3 ../scripts/normalize_to_csv.py "$TXT_FILE" "$CSV_FILE" "\t"
         """
 
 rule download_friendster:
@@ -437,7 +437,7 @@ rule download_friendster:
         else
             echo "Error: $FILENAME not found!"
         fi
-        python3 ../scripts/normalize_to_csv.py "$TXT_FILE" "$CSV_FILE"
+        python3 ../scripts/normalize_to_csv.py "$TXT_FILE" "$CSV_FILE" "\t"
         """
 
 rule download_other_data_sets:
