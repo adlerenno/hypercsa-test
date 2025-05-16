@@ -35,12 +35,14 @@ def combine_comp(DATA_SETS, APPROACHES, out_file):
                 indicator = get_success_indicator(f'indicators/{data_set}.{approach}')
                 file_original_size = get_file_size(f'data/{data_set}')
                 file_compressed_size = get_file_size(f'compressed/{approach}/{data_set}')
-                if not isfile(bench):
-                    raise FileNotFoundError(f'Benchmark file "{bench}" does not exist.')
-                with open(bench, 'r') as g:
-                    reader = csv.reader(g, delimiter="\t")
-                    next(reader)  # Headers line
-                    writer.writerow([approach, data_set, indicator, str(file_original_size), str(file_compressed_size)] + next(reader))
+                if isfile(bench):
+                    with open(bench, 'r') as g:
+                        reader = csv.reader(g, delimiter="\t")
+                        next(reader)  # Headers line
+                        bench_data = next(reader)
+                else:
+                    bench_data = ['N/A' for _ in range(10)]
+                writer.writerow([approach, data_set, indicator, str(file_original_size), str(file_compressed_size)] + bench_data)
 
 
 def combine_query(DATA_SETS, APPROACHES, QUERY_LENGTH_OF_DATA_SET, out_file):
@@ -57,19 +59,23 @@ def combine_query(DATA_SETS, APPROACHES, QUERY_LENGTH_OF_DATA_SET, out_file):
             for approach in APPROACHES:
                 bench_exact = f'bench/{data_set}.{approach}.exact.csv'
                 indicator_exact = get_success_indicator(f'indicators/{data_set}.{approach}.exact')
-                if not isfile(bench_exact):
-                    raise FileNotFoundError(f'Benchmark file "{bench_exact}" does not exist.')
-                with open(bench_exact, 'r') as g:
-                    reader = csv.reader(g, delimiter="\t")
-                    next(reader)  # Headers line
-                    writer.writerow([approach, data_set, 'exact', '100', indicator_exact] + next(reader))
+                if isfile(bench_exact):
+                    with open(bench_exact, 'r') as g:
+                        reader = csv.reader(g, delimiter="\t")
+                        next(reader)  # Headers line
+                        bench_data = next(reader)
+                else:
+                    bench_data = ['N/A' for _ in range(10)]
+                writer.writerow([approach, data_set, 'exact', '100', indicator_exact] + bench_data)
 
                 for k in range(1, QUERY_LENGTH_OF_DATA_SET[data_set]):
                     bench_contains = f'bench/{data_set}.{approach}.contains.{k}.csv'
                     indicator_contains = get_success_indicator(f'indicators/{data_set}.{approach}.contains.{k}')
-                    if not isfile(bench_contains):
-                        raise FileNotFoundError(f'Benchmark file "{bench_contains}" does not exist.')
-                    with open(bench_contains, 'r') as g:
-                        reader = csv.reader(g, delimiter="\t")
-                        next(reader)  # Headers line
-                        writer.writerow([approach, data_set, str(k), str(query_count[k]), indicator_contains] + next(reader))
+                    if isfile(bench_contains):
+                        with open(bench_contains, 'r') as g:
+                            reader = csv.reader(g, delimiter="\t")
+                            next(reader)  # Headers line
+                            bench_data = next(reader)
+                    else:
+                        bench_data = ['N/A' for _ in range(10)]
+                    writer.writerow([approach, data_set, str(k), str(query_count[k]), indicator_contains] + bench_data)
