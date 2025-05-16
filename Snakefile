@@ -43,10 +43,7 @@ QUERY_LENGTH_OF_DATA_SET = {
 OMITTED_COMBINATIONS = [
     ('incidence_matrix', 'com-orkut.txt'),
     ('incidence_matrix', 'com-friendster.txt'),
-    ('incidence_matrix', 'stackoverflow-answers.txt'),
-    ('incidence_list', 'com-orkut.txt'),
-    ('incidence_list', 'com-friendster.txt'),
-    ('incidence_list', 'stackoverflow-answers.txt')
+    ('incidence_matrix', 'stackoverflow-answers.txt')
 ]
 OMITTED_QUERY_COMBINATIONS = [
     ('incidence_matrix', 'com-orkut.txt', 'exact'),
