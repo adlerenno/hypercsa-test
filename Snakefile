@@ -18,12 +18,12 @@ APPROACHES = [
     'hypercsa',
     'ligra',
     'incidence_matrix',
-    #'hypernetx'
+    'incidence_list'
 ]
 APPROACHES_QUERIES = [
     'hypercsa',
     'incidence_matrix',
-    #'hypernetx'
+    'incidence_list'
 ]
 
 DATA_SETS = [
@@ -43,7 +43,10 @@ QUERY_LENGTH_OF_DATA_SET = {
 OMITTED_COMBINATIONS = [
     ('incidence_matrix', 'com-orkut.txt'),
     ('incidence_matrix', 'com-friendster.txt'),
-    ('incidence_matrix', 'stackoverflow-answers.txt')
+    ('incidence_matrix', 'stackoverflow-answers.txt'),
+    ('incidence_list', 'com-orkut.txt'),
+    ('incidence_list', 'com-friendster.txt'),
+    ('incidence_list', 'stackoverflow-answers.txt')
 ]
 OMITTED_QUERY_COMBINATIONS = [
     ('incidence_matrix', 'com-orkut.txt', 'exact'),
@@ -151,38 +154,35 @@ rule hypercsa_contains_queries:
         """
 
 
-rule hypernetx_exact_queries:
+rule incidence_list_exact_queries:
     input:
-        indicator='indicators/hypernetx_installed',
-        source = 'indicators/{filename}.hypernetx',
+        source = 'indicators/{filename}.incidence_list',
         queries = 'queries/{filename}_e'
     output:
-        indicator = 'indicators/{filename}.hypernetx.exact'
+        indicator = 'indicators/{filename}.incidence_list.exact'
     params:
         threads = NUMBER_OF_PROCESSORS
-    benchmark: 'bench/{filename}.hypernetx.exact.csv'
+    benchmark: 'bench/{filename}.incidence_list.exact.csv'
     run:
-        from scripts.hypernetx_use import run_exact_queries
-        run_exact_queries(f'compressed/hypernetx/{wildcards.filename}', input.queries, output.indicator)
+        from scripts.incidence_list import run_exact_queries
+        run_exact_queries(f'compressed/incidence_list/{wildcards.filename}', input.queries, output.indicator)
 
-rule hypernetx_contains_queries:
+rule incidence_list_contains_queries:
     input:
-        indicator='indicators/hypernetx_installed',
-        source = 'indicators/{filename}.hypernetx',
+        source = 'indicators/{filename}.incidence_list',
         queries = 'queries/{filename}_c_{k}'
     output:
-        indicator = 'indicators/{filename}.hypernetx.contains.{k}'
+        indicator = 'indicators/{filename}.incidence_list.contains.{k}'
     params:
         threads = NUMBER_OF_PROCESSORS
-    benchmark: 'bench/{filename}.hypernetx.contains.{k}.csv'
+    benchmark: 'bench/{filename}.incidence_list.contains.{k}.csv'
     run:
-        from scripts.hypernetx_use import run_containment_queries
-        run_containment_queries(f'compressed/hypernetx/{wildcards.filename}', input.queries, output.indicator)
+        from scripts.incidence_list import run_containment_queries
+        run_containment_queries(f'compressed/incidence_list/{wildcards.filename}', input.queries, output.indicator)
 
 
 rule incidence_matrix_exact_queries:
     input:
-        indicator='indicators/hypernetx_installed',
         source = 'indicators/{filename}.incidence_matrix',
         queries = 'queries/{filename}_e'
     output:
@@ -196,7 +196,6 @@ rule incidence_matrix_exact_queries:
 
 rule incidence_matrix_contains_queries:
     input:
-        indicator='indicators/hypernetx_installed',
         source = 'indicators/{filename}.incidence_matrix',
         queries = 'queries/{filename}_c_{k}'
     output:
@@ -240,28 +239,25 @@ rule ligra:
         echo 0 > {output.indicator}
         fi"""
 
-rule hypernetx:
+rule incidence_list:
     input:
-        indicator = 'indicators/hypernetx_installed',
         source = 'data/{filename}'
     output:
-        indicator = 'indicators/{filename}.hypernetx'
+        indicator = 'indicators/{filename}.incidence_list'
     params:
         threads = NUMBER_OF_PROCESSORS
-    benchmark: 'bench/{filename}.hypernetx.csv'
-    run:
-        from scripts.hypernetx_use import compress_hypergraph
-        try:
-            compress_hypergraph(input.source, f'compressed/hypernetx/{wildcards.filename}')
-            with open(output.indicator, 'w') as out:
-                out.write('1')
-        except Exception as e:
-            with open(output.indicator, 'w') as out:
-                out.write('0')
+    benchmark: 'bench/{filename}.incidence_list.csv'
+    shell:
+        """
+        if cp {input.source} compressed/incidence_list/{wildcards.filename}; then 
+        echo 1 > {output.indicator}
+        else
+        echo 0 > {output.indicator}
+        fi
+        """
 
 rule incidence_matrix:
     input:
-        #indicator = 'indicators/hypernetx_installed',
         source = 'data/{filename}'
     output:
         indicator = 'indicators/{filename}.incidence_matrix'
@@ -328,34 +324,34 @@ rule build_ligra:
         make -j$(nproc)
         """
 
-rule hypernetx_build:
-    output:
-        indicator = 'indicators/hypernetx_installed'
-    shell:
-        """
-        pip install hypernetx
-        echo 1 > {output.indicator}
-        """
+# rule hypernetx_build:
+#     output:
+#         indicator = 'indicators/hypernetx_installed'
+#     shell:
+#         """
+#         pip install hypernetx
+#         echo 1 > {output.indicator}
+#         """
 
-rule build_shuffle_sorting:
-    output:
-        script = 'shuffle_coding/target/debug/shuffle_coding'
-    shell:
-        """
-        rm -rf shuffle-coding
-        if ! command -v rustc &> /dev/null; then
-          echo "Rust is not installed. Installing Rust..."
-          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-          # Source the cargo environment immediately (for current shell)
-          source $HOME/.cargo/env
-        else
-          echo "Rust is already installed: $(rustc --version)"
-        fi
-        git clone https://github.com/juliuskunze/shuffle-coding.git
-        cd shuffle-coding
-        cargo build --release
-        ./shuffle_coding/target/debug/shuffle_coding -V
-        """
+# rule build_shuffle_sorting:
+#     output:
+#         script = 'shuffle_coding/target/debug/shuffle_coding'
+#     shell:
+#         """
+#         rm -rf shuffle-coding
+#         if ! command -v rustc &> /dev/null; then
+#           echo "Rust is not installed. Installing Rust..."
+#           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+#           # Source the cargo environment immediately (for current shell)
+#           source $HOME/.cargo/env
+#         else
+#           echo "Rust is already installed: $(rustc --version)"
+#         fi
+#         git clone https://github.com/juliuskunze/shuffle-coding.git
+#         cd shuffle-coding
+#         cargo build --release
+#         ./shuffle_coding/target/debug/shuffle_coding -V
+#         """
 
 rule generate_ligra_files:
     input:
@@ -366,13 +362,13 @@ rule generate_ligra_files:
         from scripts.to_hygra_format import convert_to_adjacency_hypergraph
         convert_to_adjacency_hypergraph(input.file, output.ofile)
 
-rule generate_shuffle_coding_files:
-    input:
-        file = 'data/{filename}'
-    output:
-        ofile = 'data/{filename}.sc'
-    shell:
-        """tr ',' ' ' < {input.file} > {output.ofile}"""
+# rule generate_shuffle_coding_files:
+#     input:
+#         file = 'data/{filename}'
+#     output:
+#         ofile = 'data/{filename}.sc'
+#     shell:
+#         """tr ',' ' ' < {input.file} > {output.ofile}"""
 
 rule generate_exact_queries:
     input:
