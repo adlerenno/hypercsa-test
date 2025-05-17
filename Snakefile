@@ -27,23 +27,41 @@ APPROACHES_QUERIES = [
 ]
 
 DATA_SETS = [
+    'amazon-reviews.txt',
+    'house-bills.txt',
+    'house-committees.txt',
+    'mathoverflow-answers.txt',
     'senate-committees.txt',
+    'senate-bills.txt',
+    'stackoverflow-answers.txt',
+    'trivago-clicks.txt',
+    'walmart-trips.txt',
     'com-orkut.txt',
     'com-friendster.txt',
-    'stackoverflow-answers.txt',
-    'walmart-trips.txt'
 ]
 QUERY_LENGTH_OF_DATA_SET = {
+    'amazon-reviews.txt':15,
+    'house-bills.txt':15,
+    'house-committees.txt':15,
+    'mathoverflow-answers.txt':15,
     'senate-committees.txt':15,
+    'senate-bills.txt':15,
+    'stackoverflow-answers.txt':150,
+    'trivago-clicks.txt':15,
+    'walmart-trips.txt':15,
     'com-orkut.txt':20,
     'com-friendster.txt':25,
-    'stackoverflow-answers.txt':150,
-    'walmart-trips.txt':15,
 }
 OMITTED_COMBINATIONS = [
+    ('incidence_matrix', 'amazon-review.txt'),
+    ('incidence_matrix', 'house-bills.txt'),
+    ('incidence_matrix', 'house-committees.txt'),
+    ('incidence_matrix', 'mathoverflow-answers.txt'),
+    ('incidence_matrix', 'senate-bills.txt'),
+    ('incidence_matrix', 'stackoverflow-answers.txt'),
+    ('incidence_matrix', 'trivago-clicks.txt'),
     ('incidence_matrix', 'com-orkut.txt'),
     ('incidence_matrix', 'com-friendster.txt'),
-    ('incidence_matrix', 'stackoverflow-answers.txt')
 ]
 OMITTED_QUERY_COMBINATIONS = [
     ('incidence_matrix', 'com-orkut.txt', 'exact'),
@@ -449,8 +467,14 @@ rule download_friendster:
 
 rule download_other_data_sets:
     output:
+        'data/amazon-reviews.txt',
+        'data/house-bills.txt',
+        'data/house-committees.txt',
+        'data/mathoverflow-answers.txt',
         'data/senate-committees.txt',
+        'data/senate-bills.txt',
         'data/stackoverflow-answers.txt',
+        'data/trivago-clicks.txt',
         'data/walmart-trips.txt'
     shell:
         """
@@ -460,7 +484,13 @@ rule download_other_data_sets:
         else
             git clone https://git.cs.uni-paderborn.de/eadler/datasets-hypercsa-test
         fi
+        python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-amazon-reviews.txt amazon-reviews.txt ","
+        python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-house-bills.txt house-bills.txt ","
+        python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-house-committees.txt house-committees.txt ","
+        python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-mathoverlow-answers.txt mathoverflow-answers.txt ","
+        python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-senate-bills.txt senate-bills.txt ","
         python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-senate-committees.txt senate-committees.txt ","
         python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-stackoverflow-answers.txt stackoverflow-answers.txt ","
+        python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-trivago-clicks.txt trivago-clicks.txt ","
         python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-walmart-trips.txt walmart-trips.txt ","
         """
