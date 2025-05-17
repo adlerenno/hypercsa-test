@@ -487,7 +487,7 @@ rule download_other_data_sets:
         python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-amazon-reviews.txt amazon-reviews.txt ","
         python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-house-bills.txt house-bills.txt ","
         python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-house-committees.txt house-committees.txt ","
-        python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-mathoverlow-answers.txt mathoverflow-answers.txt ","
+        python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-mathoverflow-answers.txt mathoverflow-answers.txt ","
         python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-senate-bills.txt senate-bills.txt ","
         python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-senate-committees.txt senate-committees.txt ","
         python3 ../scripts/normalize_to_csv.py datasets-hypercsa-test/hyperedges-stackoverflow-answers.txt stackoverflow-answers.txt ","
