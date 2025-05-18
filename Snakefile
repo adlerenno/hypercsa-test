@@ -54,12 +54,7 @@ QUERY_LENGTH_OF_DATA_SET = {
 }
 OMITTED_COMBINATIONS = [
     ('incidence_matrix', 'amazon-review.txt'),
-    ('incidence_matrix', 'house-bills.txt'),
-    ('incidence_matrix', 'house-committees.txt'),
-    ('incidence_matrix', 'mathoverflow-answers.txt'),
-    ('incidence_matrix', 'senate-bills.txt'),
     ('incidence_matrix', 'stackoverflow-answers.txt'),
-    ('incidence_matrix', 'trivago-clicks.txt'),
     ('incidence_matrix', 'com-orkut.txt'),
     ('incidence_matrix', 'com-friendster.txt'),
 ]
