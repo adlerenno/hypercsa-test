@@ -1,3 +1,9 @@
 /data/
 /hypercsa/
 /scripts/shuffle-coding/
+/queries/
+/indicators/
+/bench/
+/compressed/
+/.snakemake/
+/results/

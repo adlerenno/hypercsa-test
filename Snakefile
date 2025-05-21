@@ -18,12 +18,14 @@ APPROACHES = [
     'hypercsa',
     'ligra',
     'incidence_matrix',
-    'incidence_list'
+    'incidence_list',
+    'itr'
 ]
 APPROACHES_QUERIES = [
     'hypercsa',
     'incidence_matrix',
-    'incidence_list'
+    'incidence_list',
+    'itr'
 ]
 
 DATA_SETS = [
@@ -57,6 +59,13 @@ OMITTED_COMBINATIONS = [
     ('incidence_matrix', 'stackoverflow-answers.txt'),
     ('incidence_matrix', 'com-orkut.txt'),
     ('incidence_matrix', 'com-friendster.txt'),
+    ('itr', 'mathoverflow-answers.txt'),
+    ('itr', 'house-bills.txt'),
+    ('itr', 'amazon-reviews.txt'),
+    ('itr', 'stackoverflow-answers.txt'),
+    ('itr', 'com-friendster.txt'),
+    ('itr', 'com-orkut.txt'),
+
 ]
 OMITTED_QUERY_COMBINATIONS = [
     ('incidence_matrix', 'com-orkut.txt', 'exact'),
@@ -163,6 +172,44 @@ rule hypercsa_contains_queries:
         fi
         """
 
+rule itr_exact_queries:
+    input:
+        script = 'itr/build/cgraph-cli',
+        source = 'indicators/{filename}.itr',
+        queries = 'queries/{filename}_e'
+    output:
+        indicator = 'indicators/{filename}.itr.exact'
+    params:
+        threads = NUMBER_OF_PROCESSORS
+    benchmark: 'bench/{filename}.itr.exact.csv'
+    shell:
+        """
+        if {input.script} --query-file {input.queries} --exact-query --exist_query compressed/hypercsa/{wildcards.filename}; then 
+        echo 1 > {output.indicator}
+        else
+        echo 0 > {output.indicator}
+        fi
+        """
+
+rule itr_contains_queries:
+    input:
+        script = 'itr/build/cgraph-cli',
+        source = 'indicators/{filename}.itr',
+        queries = 'queries/{filename}_c_{k}'
+    output:
+        indicator = 'indicators/{filename}.itr.contains.{k}'
+    params:
+        threads = NUMBER_OF_PROCESSORS
+    benchmark: 'bench/{filename}.itr.contains.{k}.csv'
+    shell:
+        """
+        if {input.script} --query-file {input.queries} compressed/hypercsa/{wildcards.filename}; then 
+        echo 1 > {output.indicator}
+        else
+        echo 0 > {output.indicator}
+        fi
+        """
+
 
 rule incidence_list_exact_queries:
     input:
@@ -233,6 +280,22 @@ rule hypercsa:
         echo 0 > {output.indicator}
         fi"""
 
+rule itr:
+    input:
+        script = 'itr/build/cgraph-cli',
+        source = 'data/{filename}'
+    output:
+        indicator = 'indicators/{filename}.itr'
+    params:
+        threads = NUMBER_OF_PROCESSORS
+    benchmark: 'bench/{filename}.itr.csv'
+    shell:
+        """if {input.script} {input.source} compressed/hypercsa/{wildcards.filename} --overwrite; then 
+        echo 1 > {output.indicator}
+        else
+        echo 0 > {output.indicator}
+        fi"""
+
 rule ligra:
     input:
         script = 'ligra/apps/hyper/hypergraphEncoder',
@@ -285,6 +348,8 @@ rule incidence_matrix:
             with open(output.indicator, 'w') as out:
                 out.write('0')
 
+
+
 rule shuffle_coding:
     input:
         script='shuffle_coding/target/debug/shuffle_coding',
@@ -318,6 +383,20 @@ rule build_hypercsa:
         mkdir -p build
         cd build
         cmake ..
+        make
+        """
+
+rule build_itr:
+    output:
+        script = 'itr/build/cgraph-cli'
+    shell:
+        """
+        rm -rf itr
+        git clone https://github.com/adlerenno/itr
+        cd itr
+        mkdir -p build
+        cd build
+        cmake -DCMAKE_BUILD_TYPE=Release -DOPTIMIZE_FOR_NATIVE=on -DWITH_RRR=on ..
         make
         """
 
