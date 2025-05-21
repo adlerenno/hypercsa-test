@@ -184,7 +184,7 @@ rule itr_exact_queries:
     benchmark: 'bench/{filename}.itr.exact.csv'
     shell:
         """
-        if {input.script} --query-file {input.queries} --exact-query --exist_query compressed/hypercsa/{wildcards.filename}; then 
+        if {input.script} --query-file {input.queries} --exact-query --exist_query compressed/itr/{wildcards.filename}; then 
         echo 1 > {output.indicator}
         else
         echo 0 > {output.indicator}
@@ -203,7 +203,7 @@ rule itr_contains_queries:
     benchmark: 'bench/{filename}.itr.contains.{k}.csv'
     shell:
         """
-        if {input.script} --query-file {input.queries} compressed/hypercsa/{wildcards.filename}; then 
+        if {input.script} --query-file {input.queries} compressed/itr/{wildcards.filename}; then 
         echo 1 > {output.indicator}
         else
         echo 0 > {output.indicator}
@@ -290,7 +290,7 @@ rule itr:
         threads = NUMBER_OF_PROCESSORS
     benchmark: 'bench/{filename}.itr.csv'
     shell:
-        """if {input.script} {input.source} compressed/hypercsa/{wildcards.filename} --overwrite; then 
+        """if {input.script} {input.source} compressed/itr/{wildcards.filename} --overwrite; then 
         echo 1 > {output.indicator}
         else
         echo 0 > {output.indicator}
