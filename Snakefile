@@ -59,12 +59,12 @@ OMITTED_COMBINATIONS = [
     ('incidence_matrix', 'stackoverflow-answers.txt'),
     ('incidence_matrix', 'com-orkut.txt'),
     ('incidence_matrix', 'com-friendster.txt'),
-    ('itr', 'mathoverflow-answers.txt'),
-    ('itr', 'house-bills.txt'),
-    ('itr', 'amazon-reviews.txt'),
+    #('itr', 'mathoverflow-answers.txt'),
+    #('itr', 'house-bills.txt'),
+    #('itr', 'amazon-reviews.txt'),
     ('itr', 'stackoverflow-answers.txt'),
-    ('itr', 'com-friendster.txt'),
-    ('itr', 'com-orkut.txt'),
+    #('itr', 'com-friendster.txt'),
+    #('itr', 'com-orkut.txt'),
 
 ]
 OMITTED_QUERY_COMBINATIONS = [
