@@ -64,7 +64,7 @@ OMITTED_COMBINATIONS = [
     #('itr', 'amazon-reviews.txt'),
     ('itr', 'stackoverflow-answers.txt'),
     #('itr', 'com-friendster.txt'),
-    #('itr', 'com-orkut.txt'),
+    ('itr', 'com-orkut.txt'),
 
 ]
 OMITTED_QUERY_COMBINATIONS = [
