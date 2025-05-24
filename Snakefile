@@ -184,7 +184,7 @@ rule itr_exact_queries:
     benchmark: 'bench/{filename}.itr.exact.csv'
     shell:
         """
-        if {input.script} --query-file {input.queries} --exact-query --exist_query compressed/itr/{wildcards.filename}; then 
+        if {input.script} --query-file {input.queries} --exact-query --exist-query compressed/itr/{wildcards.filename}; then 
         echo 1 > {output.indicator}
         else
         echo 0 > {output.indicator}
