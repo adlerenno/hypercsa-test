@@ -26,7 +26,7 @@ def get_file_size(filename) -> int:
 
 
 def get_file_size_for_approach(approach, filename) -> int:
-    if approach in {''}:
+    if approach in ('reordering_unordering', 'reordering_vertices', 'reordering_hyperedges', 'reordering_vertices_hyperedges'):
         return sum(map(get_file_size, (filename + appendix for appendix in ('-vertexSet', '-hyperedgeSet', '-edgeID', '-edgeSet'))))
     else:
         return get_file_size(filename)
