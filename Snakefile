@@ -492,7 +492,7 @@ rule build_reordering:
         script = 'reordering-cli/build/reordering'
     shell:
         """
-        rm -rf reordering
+        rm -rf reordering-cli
         git clone https://github.com/adlerenno/reordering-cli
         cd reordering-cli
         mkdir -p build
