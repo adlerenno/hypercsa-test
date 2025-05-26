@@ -360,7 +360,7 @@ rule incidence_matrix:
 
 rule reordering_unordering:
     input:
-        script = 'reordering/build/reordering',
+        script = 'reordering-cli/build/reordering',
         source = 'data/{filename}'
     output:
         indicator = 'indicators/{filename}.reordering_unordering'
@@ -376,7 +376,7 @@ rule reordering_unordering:
 
 rule reordering_vertices:
     input:
-        script = 'reordering/build/reordering',
+        script = 'reordering-cli/build/reordering',
         source = 'data/{filename}'
     output:
         indicator = 'indicators/{filename}.reordering_vertices'
@@ -392,7 +392,7 @@ rule reordering_vertices:
 
 rule reordering_hyperedges:
     input:
-        script = 'reordering/build/reordering',
+        script = 'reordering-cli/build/reordering',
         source = 'data/{filename}'
     output:
         indicator = 'indicators/{filename}.reordering_hyperedges'
@@ -407,9 +407,9 @@ rule reordering_hyperedges:
         fi"""
 
 
-rule reordering:
+rule reordering_vertices_hyperedges:
     input:
-        script = 'reordering/build/reordering',
+        script = 'reordering-cli/build/reordering',
         source = 'data/{filename}'
     output:
         indicator = 'indicators/{filename}.reordering_vertices_hyperedges'
@@ -489,12 +489,12 @@ rule build_ligra:
 
 rule build_reordering:
     output:
-        script = 'reordering/build/reordering'
+        script = 'reordering-cli/build/reordering'
     shell:
         """
         rm -rf reordering
         git clone https://github.com/adlerenno/reordering-cli
-        cd reordering
+        cd reordering-cli
         mkdir -p build
         cd build
         cmake ..
