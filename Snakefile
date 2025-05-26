@@ -368,7 +368,7 @@ rule reordering_unordering:
         threads = NUMBER_OF_PROCESSORS
     benchmark: 'bench/{filename}.reordering_unordering.csv'
     shell:
-        """if {input.script} -i {input.source} -o compressed/reordering_unordering/{wildcards.filename} -t unorder; then 
+        """if {input.script} -i {input.source} -o compressed/reordering_unordering/{wildcards.filename} -t "unorder"; then 
         echo 1 > {output.indicator}
         else
         echo 0 > {output.indicator}
@@ -384,7 +384,7 @@ rule reordering_vertices:
         threads = NUMBER_OF_PROCESSORS
     benchmark: 'bench/{filename}.reordering_vertices.csv'
     shell:
-        """if {input.script} -i {input.source} -o compressed/reordering_vertices/{wildcards.filename} -t reV; then 
+        """if {input.script} -i {input.source} -o compressed/reordering_vertices/{wildcards.filename} -t "reV"; then 
         echo 1 > {output.indicator}
         else
         echo 0 > {output.indicator}
@@ -400,7 +400,7 @@ rule reordering_hyperedges:
         threads = NUMBER_OF_PROCESSORS
     benchmark: 'bench/{filename}.reordering_hyperedges.csv'
     shell:
-        """if {input.script} -i {input.source} -o compressed/reordering_hyperedges/{wildcards.filename} -t reH; then 
+        """if {input.script} -i {input.source} -o compressed/reordering_hyperedges/{wildcards.filename} -t "reH"; then 
         echo 1 > {output.indicator}
         else
         echo 0 > {output.indicator}
@@ -414,10 +414,11 @@ rule reordering_vertices_hyperedges:
     output:
         indicator = 'indicators/{filename}.reordering_vertices_hyperedges'
     params:
-        threads = NUMBER_OF_PROCESSORS
+        threads = NUMBER_OF_PROCESSORS,
+        temp_dir = TEMP
     benchmark: 'bench/{filename}.reordering_vertices_hyperedges.csv'
     shell:
-        """if {input.script} -i {input.source} -o compressed/reordering_vertices_hyperedges/{wildcards.filename} -reVH; then 
+        """if {input.script} -i {input.source} -o compressed/reordering_vertices_hyperedges/{wildcards.filename} -t "reVH" -x {params.temp_dir}; then 
         echo 1 > {output.indicator}
         else
         echo 0 > {output.indicator}
