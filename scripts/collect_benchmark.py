@@ -25,6 +25,13 @@ def get_file_size(filename) -> int:
         return -1
 
 
+def get_file_size_for_approach(approach, filename) -> int:
+    if approach in {''}:
+        return sum(map(get_file_size, (filename + appendix for appendix in ('-vertexSet', '-hyperedgeSet', '-edgeID', '-edgeSet'))))
+    else:
+        return get_file_size(filename)
+
+
 def combine_comp(DATA_SETS, APPROACHES, out_file):
     with open(out_file, "w") as f:
         writer = csv.writer(f, delimiter="\t")

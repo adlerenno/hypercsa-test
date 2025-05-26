@@ -19,7 +19,11 @@ APPROACHES = [
     'ligra',
     'incidence_matrix',
     'incidence_list',
-    'itr'
+    'itr',
+    'reordering_unordering',
+    'reordering_vertices',
+    'reordering_hyperedges',
+    'reordering_vertices_hyperedges'
 ]
 APPROACHES_QUERIES = [
     'hypercsa',
@@ -349,6 +353,71 @@ rule incidence_matrix:
                 out.write('0')
 
 
+rule reordering_unordering:
+    input:
+        script = 'reordering/build/reordering',
+        source = 'data/{filename}'
+    output:
+        indicator = 'indicators/{filename}.reordering_unordering'
+    params:
+        threads = NUMBER_OF_PROCESSORS
+    benchmark: 'bench/{filename}.reordering_unordering.csv'
+    shell:
+        """if {input.script} -i {input.source} -o compressed/reordering_unordering/{wildcards.filename} -t unorder; then 
+        echo 1 > {output.indicator}
+        else
+        echo 0 > {output.indicator}
+        fi"""
+
+rule reordering_vertices:
+    input:
+        script = 'reordering/build/reordering',
+        source = 'data/{filename}'
+    output:
+        indicator = 'indicators/{filename}.reordering_vertices'
+    params:
+        threads = NUMBER_OF_PROCESSORS
+    benchmark: 'bench/{filename}.reordering_vertices.csv'
+    shell:
+        """if {input.script} -i {input.source} -o compressed/reordering_vertices/{wildcards.filename} -t reV; then 
+        echo 1 > {output.indicator}
+        else
+        echo 0 > {output.indicator}
+        fi"""
+
+rule reordering_hyperedges:
+    input:
+        script = 'reordering/build/reordering',
+        source = 'data/{filename}'
+    output:
+        indicator = 'indicators/{filename}.reordering_hyperedges'
+    params:
+        threads = NUMBER_OF_PROCESSORS
+    benchmark: 'bench/{filename}.reordering_hyperedges.csv'
+    shell:
+        """if {input.script} -i {input.source} -o compressed/reordering_hyperedges/{wildcards.filename} -t reH; then 
+        echo 1 > {output.indicator}
+        else
+        echo 0 > {output.indicator}
+        fi"""
+
+
+rule reordering:
+    input:
+        script = 'reordering/build/reordering',
+        source = 'data/{filename}'
+    output:
+        indicator = 'indicators/{filename}.reordering_vertices_hyperedges'
+    params:
+        threads = NUMBER_OF_PROCESSORS
+    benchmark: 'bench/{filename}.reordering_vertices_hyperedges.csv'
+    shell:
+        """if {input.script} -i {input.source} -o compressed/reordering_vertices_hyperedges/{wildcards.filename} -reVH; then 
+        echo 1 > {output.indicator}
+        else
+        echo 0 > {output.indicator}
+        fi"""
+
 
 rule shuffle_coding:
     input:
@@ -411,6 +480,20 @@ rule build_ligra:
         make -j$(nproc)
         cd hyper
         make -j$(nproc)
+        """
+
+rule build_reordering:
+    output:
+        script = 'reordering/build/reordering'
+    shell:
+        """
+        rm -rf reordering
+        git clone https://github.com/adlerenno/reordering-cli
+        cd reordering
+        mkdir -p build
+        cd build
+        cmake ..
+        make
         """
 
 # rule hypernetx_build:
