@@ -83,7 +83,7 @@ OMITTED_COMBINATIONS = [
     ('itr', 'stackoverflow-answers.txt'),
     ('itr', 'com-friendster.txt'),
     ('itr', 'com-orkut.txt'),
-    # ('reordering_vertices', 'senate-bills.txt'),
+    ('reordering_vertices', 'senate-bills.txt'),
     ('reordering_hyperedges', 'senate-bills.txt'),  # Took more than 5 hours
     ('reordering_vertices_hyperedges', 'senate-bills.txt')  # Must take more than 5 hours, cause it uses _vertices
 ] + [
