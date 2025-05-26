@@ -74,7 +74,10 @@ OMITTED_COMBINATIONS = [
     ('itr', 'stackoverflow-answers.txt'),
     ('itr', 'com-friendster.txt'),
     ('itr', 'com-orkut.txt'),
-
+] + [
+    (approach, dataset)
+    for approach in ('reordering_unordering', 'reordering_vertices', 'reordering_hyperedges', 'reordering_vertices_hyperedges')
+    for dataset in ('com-orkut.txt', 'com-friendster.txt', 'amazon-reviews.txt', 'stackoverflow-answers.txt')
 ]
 OMITTED_QUERY_COMBINATIONS = [
     ('incidence_matrix', 'com-orkut.txt', 'exact'),
