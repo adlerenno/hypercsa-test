@@ -18,19 +18,28 @@ APPROACHES = [
     'hypercsa',
     'ligra',
     'incidence_matrix',
-    'incidence_list',
+    'plain_list',
     #'itr',
     'reordering_unordering',
     'reordering_vertices',
     'reordering_hyperedges',
-    'reordering_vertices_hyperedges'
+    'reordering_vertices_hyperedges',
+    'incidence_list'
 ]
 APPROACHES_QUERIES = [
     'hypercsa',
     'incidence_matrix',
-    'incidence_list',
+    'plain_list'
     #'itr'
 ]
+APPROACHES_QUERIES_ONLY_1 = [
+    'reordering_unordering',
+    'reordering_vertices',
+    'reordering_hyperedges',
+    'reordering_vertices_hyperedges',
+    'incidence_list'
+]
+
 if len(set(APPROACHES_QUERIES) - set(APPROACHES)):
     print('There are approaches in queries that are not in files --> would not work.')
     print(set(APPROACHES_QUERIES) - set(APPROACHES))
@@ -101,6 +110,12 @@ FILES_QUERIES = [
     for k in range(1, QUERY_LENGTH_OF_DATA_SET[file])
     if not (approach, file) in OMITTED_COMBINATIONS
     if not (approach, file, k) in OMITTED_QUERY_COMBINATIONS
+] + [
+    f'indicators/{file}.{approach}.contains.1'
+    for approach in APPROACHES_QUERIES_ONLY_1
+    for file in DATA_SETS
+    if not (approach, file) in OMITTED_COMBINATIONS
+    if not (approach, file, 1) in OMITTED_QUERY_COMBINATIONS
 ]
 
 for path in [BENCHMARK, INPUT, TEMP, OUTPUT, INDICATORS, RESULT] + [OUTPUT + approach for approach in APPROACHES]:
@@ -223,31 +238,31 @@ rule itr_contains_queries:
         """
 
 
-rule incidence_list_exact_queries:
+rule plain_list_exact_queries:
     input:
-        source = 'indicators/{filename}.incidence_list',
+        source = 'indicators/{filename}.plain_list',
         queries = 'queries/{filename}_e'
     output:
-        indicator = 'indicators/{filename}.incidence_list.exact'
+        indicator = 'indicators/{filename}.plain_list.exact'
     params:
         threads = NUMBER_OF_PROCESSORS
-    benchmark: 'bench/{filename}.incidence_list.exact.csv'
+    benchmark: 'bench/{filename}.plain_list.exact.csv'
     run:
-        from scripts.incidence_list import run_exact_queries
-        run_exact_queries(f'compressed/incidence_list/{wildcards.filename}', input.queries, output.indicator)
+        from scripts.plain_list import run_exact_queries
+        run_exact_queries(f'compressed/plain_list/{wildcards.filename}', input.queries, output.indicator)
 
-rule incidence_list_contains_queries:
+rule plain_list_contains_queries:
     input:
-        source = 'indicators/{filename}.incidence_list',
+        source = 'indicators/{filename}.plain_list',
         queries = 'queries/{filename}_c_{k}'
     output:
-        indicator = 'indicators/{filename}.incidence_list.contains.{k}'
+        indicator = 'indicators/{filename}.plain_list.contains.{k}'
     params:
         threads = NUMBER_OF_PROCESSORS
-    benchmark: 'bench/{filename}.incidence_list.contains.{k}.csv'
+    benchmark: 'bench/{filename}.plain_list.contains.{k}.csv'
     run:
-        from scripts.incidence_list import run_containment_queries
-        run_containment_queries(f'compressed/incidence_list/{wildcards.filename}', input.queries, output.indicator)
+        from scripts.plain_list import run_containment_queries
+        run_containment_queries(f'compressed/plain_list/{wildcards.filename}', input.queries, output.indicator)
 
 
 rule incidence_matrix_exact_queries:
@@ -275,6 +290,101 @@ rule incidence_matrix_contains_queries:
     run:
         from scripts.incidence_matrix import run_containment_queries
         run_containment_queries(f'compressed/incidence_matrix/{wildcards.filename}', input.queries, output.indicator)
+
+rule reordering_unordering_contains_queries:
+    input:
+        script = 'reordering-cli/build/reordering',
+        source = 'indicators/{filename}.reordering_unordering',
+        queries = 'queries/{filename}_c_1'
+    output:
+        indicator = 'indicators/{filename}.reordering_unordering.contains.1'
+    params:
+        threads = NUMBER_OF_PROCESSORS
+    benchmark: 'bench/{filename}.reordering_unordering.contains.1.csv'
+    shell:
+        """
+        if {input.script} -i compressed/reordering_unordering/{wildcards.filename} -t unorder -q {input.queries}; then 
+        echo 1 > {output.indicator}
+        else
+        echo 0 > {output.indicator}
+        fi
+        """
+
+rule reordering_vertices_contains_queries:
+    input:
+        script = 'reordering-cli/build/reordering',
+        source = 'indicators/{filename}.reordering_vertices',
+        queries = 'queries/{filename}_c_1'
+    output:
+        indicator = 'indicators/{filename}.reordering_vertices.contains.1'
+    params:
+        threads = NUMBER_OF_PROCESSORS
+    benchmark: 'bench/{filename}.reordering_vertices.contains.1.csv'
+    shell:
+        """
+        if {input.script} -i compressed/reordering_vertices/{wildcards.filename} -t reV -q {input.queries}; then 
+        echo 1 > {output.indicator}
+        else
+        echo 0 > {output.indicator}
+        fi
+        """
+
+rule reordering_hyperedges_contains_queries:
+    input:
+        script = 'reordering-cli/build/reordering',
+        source = 'indicators/{filename}.reordering_hyperedges',
+        queries = 'queries/{filename}_c_1'
+    output:
+        indicator = 'indicators/{filename}.reordering_hyperedges.contains.1'
+    params:
+        threads = NUMBER_OF_PROCESSORS
+    benchmark: 'bench/{filename}.reordering_hyperedges.contains.1.csv'
+    shell:
+        """
+        if {input.script} -i compressed/reordering_hyperedges/{wildcards.filename} -t reH -q {input.queries}; then 
+        echo 1 > {output.indicator}
+        else
+        echo 0 > {output.indicator}
+        fi
+        """
+
+rule reordering_vertices_hyperedges_contains_queries:
+    input:
+        script = 'reordering-cli/build/reordering',
+        source = 'indicators/{filename}.reordering_vertices_hyperedges',
+        queries = 'queries/{filename}_c_1'
+    output:
+        indicator = 'indicators/{filename}.reordering_vertices_hyperedges.contains.1'
+    params:
+        threads = NUMBER_OF_PROCESSORS
+    benchmark: 'bench/{filename}.reordering_vertices_hyperedges.contains.1.csv'
+    shell:
+        """
+        if {input.script} -i compressed/reordering_vertices_hyperedges/{wildcards.filename} -t reVH -q {input.queries}; then 
+        echo 1 > {output.indicator}
+        else
+        echo 0 > {output.indicator}
+        fi
+        """
+
+rule incidence_list_contains_queries:
+    input:
+        script = 'reordering-cli/build/reordering',
+        source = 'indicators/{filename}.incidence_list',
+        queries = 'queries/{filename}_c_1'
+    output:
+        indicator = 'indicators/{filename}.incidence_list.contains.1'
+    params:
+        threads = NUMBER_OF_PROCESSORS
+    benchmark: 'bench/{filename}.incidence_list.contains.1.csv'
+    shell:
+        """
+        if {input.script} -i compressed/incidence_list/{wildcards.filename} -t inc -q {input.queries}; then 
+        echo 1 > {output.indicator}
+        else
+        echo 0 > {output.indicator}
+        fi
+        """
 
 rule hypercsa:
     input:
@@ -323,6 +433,23 @@ rule ligra:
         else
         echo 0 > {output.indicator}
         fi"""
+
+rule plain_list:
+    input:
+        source = 'data/{filename}'
+    output:
+        indicator = 'indicators/{filename}.plain_list'
+    params:
+        threads = NUMBER_OF_PROCESSORS
+    benchmark: 'bench/{filename}.plain_list.csv'
+    shell:
+        """
+        if cp {input.source} compressed/plain_list/{wildcards.filename}; then 
+        echo 1 > {output.indicator}
+        else
+        echo 0 > {output.indicator}
+        fi
+        """
 
 rule incidence_list:
     input:
