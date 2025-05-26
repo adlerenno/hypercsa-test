@@ -88,12 +88,7 @@ OMITTED_COMBINATIONS = [
     for approach in ('reordering_unordering', 'reordering_vertices', 'reordering_hyperedges', 'reordering_vertices_hyperedges', 'incidence_list')
     for dataset in ('amazon-reviews.txt',
     'house-bills.txt',
-    'house-committees.txt',
-    'mathoverflow-answers.txt',
-    'senate-bills.txt',
     'stackoverflow-answers.txt',
-    'trivago-clicks.txt',
-    'walmart-trips.txt',
     'com-orkut.txt',
     'com-friendster.txt',)
 ]
