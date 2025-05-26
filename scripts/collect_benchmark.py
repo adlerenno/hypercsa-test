@@ -13,7 +13,7 @@ def get_success_indicator(filename) -> str:
             for line in f:
                 return line[0]
     else:
-        print(f'indicator "{filename}" is missing. I assume failure.')
+        # print(f'indicator "{filename}" is missing. I assume failure.')
         return '0'
         # raise FileNotFoundError(f'File indicators/{filename}.{file_extension}.{approach} not found.')
 
