@@ -19,7 +19,7 @@ APPROACHES = [
     'ligra',
     'incidence_matrix',
     'incidence_list',
-    'itr',
+    #'itr',
     'reordering_unordering',
     'reordering_vertices',
     'reordering_hyperedges',
@@ -29,8 +29,13 @@ APPROACHES_QUERIES = [
     'hypercsa',
     'incidence_matrix',
     'incidence_list',
-    'itr'
+    #'itr'
 ]
+if len(set(APPROACHES_QUERIES) - set(APPROACHES)):
+    print('There are approaches in queries that are not in files --> would not work.')
+    print(set(APPROACHES_QUERIES) - set(APPROACHES))
+    exit(1)
+
 
 DATA_SETS = [
     'amazon-reviews.txt',
