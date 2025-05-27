@@ -41,7 +41,7 @@ def combine_comp(DATA_SETS, APPROACHES, out_file):
                 bench = f'bench/{data_set}.{approach}.csv'
                 indicator = get_success_indicator(f'indicators/{data_set}.{approach}')
                 file_original_size = get_file_size(f'data/{data_set}')
-                file_compressed_size = get_file_size(f'compressed/{approach}/{data_set}')
+                file_compressed_size = get_file_size_for_approach(approach, f'compressed/{approach}/{data_set}')
                 if isfile(bench):
                     with open(bench, 'r') as g:
                         reader = csv.reader(g, delimiter="\t")
