@@ -22,7 +22,7 @@ def get_file_size(filename) -> int:
     if os.path.isfile(filename):
         return os.path.getsize(filename)
     else:
-        return -1
+        raise FileNotFoundError(filename)
 
 
 def get_file_size_for_approach(approach, filename) -> int:
