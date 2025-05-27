@@ -22,12 +22,18 @@ def get_file_size(filename) -> int:
     if os.path.isfile(filename):
         return os.path.getsize(filename)
     else:
-        raise FileNotFoundError(filename)
+        return -1
 
 
 def get_file_size_for_approach(approach, filename) -> int:
     if approach in ('reordering_unordering', 'reordering_vertices', 'reordering_hyperedges', 'reordering_vertices_hyperedges'):
-        return sum(map(get_file_size, (filename + appendix for appendix in ('-vertexSet', '-hyperedgeSet', '-edgeID', '-edgeSet'))))
+        sum_fs = 0
+        for appendix in ('-vertexSet', '-hyperedgeSet', '-edgeID', '-edgeSet'):
+            fs = get_file_size(filename + appendix)
+            if fs == -1:
+                return -1
+            sum_fs += fs
+        return sum_fs
     else:
         return get_file_size(filename)
 
