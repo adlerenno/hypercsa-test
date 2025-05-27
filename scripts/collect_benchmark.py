@@ -142,6 +142,6 @@ if __name__ == '__main__':
         'com-orkut.txt': 20,
         'com-friendster.txt': 25,
     }
-
+    os.chdir("..")
     combine_comp(DATA_SETS, APPROACHES, comp_bench)
     combine_query(DATA_SETS, APPROACHES_QUERIES + APPROACHES_QUERIES_ONLY_1, QUERY_LENGTH_OF_DATA_SET, query_bench)
