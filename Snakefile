@@ -92,8 +92,7 @@ OMITTED_COMBINATIONS = [
     for dataset in ('amazon-reviews.txt',
     'house-bills.txt',
     'stackoverflow-answers.txt',
-    'com-orkut.txt',
-    'com-friendster.txt',)
+    'com-orkut.txt')
 ]
 OMITTED_QUERY_COMBINATIONS = [
     ('incidence_matrix', 'com-orkut.txt', 'exact'),
