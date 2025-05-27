@@ -88,7 +88,7 @@ OMITTED_COMBINATIONS = [
     #('reordering_vertices_hyperedges', 'senate-bills.txt')  # Must take more than 5 hours, cause it uses _vertices
 ] + [
     (approach, dataset)
-    for approach in ('reordering_vertices', 'reordering_hyperedges', 'reordering_vertices_hyperedges')
+    for approach in ('reordering_vertices', 'reordering_vertices_hyperedges')
     for dataset in ('amazon-reviews.txt',
     #'house-bills.txt',
     'stackoverflow-answers.txt',
