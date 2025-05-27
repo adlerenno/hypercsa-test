@@ -86,3 +86,62 @@ def combine_query(DATA_SETS, APPROACHES, QUERY_LENGTH_OF_DATA_SET, out_file):
                     else:
                         bench_data = ['N/A' for _ in range(10)]
                     writer.writerow([approach, data_set, str(k), str(query_count[k]), indicator_contains] + bench_data)
+
+
+if __name__ == '__main__':
+    comp_bench = 'results/comp_benchmark.csv'
+    query_bench = 'results/query_benchmark.csv'
+    APPROACHES = [
+        'hypercsa',
+        'ligra',
+        'incidence_matrix',
+        'plain_list',
+        # 'itr',
+        'reordering_unordering',
+        'reordering_vertices',
+        'reordering_hyperedges',
+        'reordering_vertices_hyperedges',
+        'incidence_list'
+    ]
+    APPROACHES_QUERIES = [
+        'hypercsa',
+        'incidence_matrix',
+        'plain_list'
+        # 'itr'
+    ]
+    APPROACHES_QUERIES_ONLY_1 = [
+        'reordering_unordering',
+        'reordering_vertices',
+        'reordering_hyperedges',
+        'reordering_vertices_hyperedges',
+        'incidence_list'
+    ]
+    DATA_SETS = [
+        'amazon-reviews.txt',
+        'house-bills.txt',
+        'house-committees.txt',
+        'mathoverflow-answers.txt',
+        'senate-committees.txt',
+        'senate-bills.txt',
+        'stackoverflow-answers.txt',
+        'trivago-clicks.txt',
+        'walmart-trips.txt',
+        'com-orkut.txt',
+        'com-friendster.txt',
+    ]
+    QUERY_LENGTH_OF_DATA_SET = {
+        'amazon-reviews.txt': 15,
+        'house-bills.txt': 15,
+        'house-committees.txt': 15,
+        'mathoverflow-answers.txt': 15,
+        'senate-committees.txt': 15,
+        'senate-bills.txt': 15,
+        'stackoverflow-answers.txt': 150,
+        'trivago-clicks.txt': 15,
+        'walmart-trips.txt': 15,
+        'com-orkut.txt': 20,
+        'com-friendster.txt': 25,
+    }
+
+    combine_comp(DATA_SETS, APPROACHES, comp_bench)
+    combine_query(DATA_SETS, APPROACHES_QUERIES + APPROACHES_QUERIES_ONLY_1, QUERY_LENGTH_OF_DATA_SET, query_bench)
