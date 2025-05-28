@@ -54,7 +54,7 @@ def combine_comp(DATA_SETS, APPROACHES, out_file):
                         next(reader)  # Headers line
                         bench_data = next(reader)
                 else:
-                    bench_data = ['N/A' for _ in range(10)]
+                    bench_data = ['NA' for _ in range(10)]
                 writer.writerow([approach, data_set, indicator, str(file_original_size), str(file_compressed_size)] + bench_data)
 
 
@@ -78,7 +78,7 @@ def combine_query(DATA_SETS, APPROACHES, QUERY_LENGTH_OF_DATA_SET, out_file):
                         next(reader)  # Headers line
                         bench_data = next(reader)
                 else:
-                    bench_data = ['N/A' for _ in range(10)]
+                    bench_data = ['NA' for _ in range(10)]
                 writer.writerow([approach, data_set, 'exact', '100', indicator_exact] + bench_data)
 
                 for k in range(1, QUERY_LENGTH_OF_DATA_SET[data_set]):
@@ -90,7 +90,7 @@ def combine_query(DATA_SETS, APPROACHES, QUERY_LENGTH_OF_DATA_SET, out_file):
                             next(reader)  # Headers line
                             bench_data = next(reader)
                     else:
-                        bench_data = ['N/A' for _ in range(10)]
+                        bench_data = ['NA' for _ in range(10)]
                     writer.writerow([approach, data_set, str(k), str(query_count[k]), indicator_contains] + bench_data)
 
 
