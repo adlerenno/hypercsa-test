@@ -392,6 +392,38 @@ rule incidence_list_contains_queries:
         fi
         """
 
+rule chgl_contains_queries:
+    input:
+        script = './chgl/chgl_contain',
+        source = 'indicators/{filename}.chgl',
+        queries = 'queries/{filename}_c_1'
+    output:
+        indicator = 'indicators/{filename}.chgl.contains.1'
+    benchmark: 'bench/{filename}.chgl.csv'
+    shell:
+        """if {input.script} --inputFile=compressed/chgl/{wildcards.filename} --queryFile={input.queries}; then 
+        echo 1 > {output.indicator}
+        else
+        echo 0 > {output.indicator}
+        fi"""
+
+rule chgl_exact_queries:
+    input:
+        script = 'chgl/chgl_exact',
+        source = 'indicators/{filename}.chgl',
+        queries = 'queries/{filename}_e'
+    output:
+        indicator = 'indicators/{filename}.chgl.exact'
+    benchmark: 'bench/{filename}.chgl.exact.csv'
+    shell:
+        """
+        if {input.script} --inputFile=compressed/chgl/{wildcards.filename} --queryFile={input.queries}; then 
+        echo 1 > {output.indicator}
+        else
+        echo 0 > {output.indicator}
+        fi
+        """
+
 rule hypercsa:
     input:
         script = 'hypercsa/build/hypercsa-cli',
@@ -560,7 +592,6 @@ rule reordering_vertices_hyperedges:
         echo 0 > {output.indicator}
         fi"""
 
-
 rule shuffle_coding:
     input:
         script='shuffle_coding/target/debug/shuffle_coding',
@@ -636,6 +667,35 @@ rule build_reordering:
         cd build
         cmake ..
         make
+        """
+
+rule build_chgl:  # https://github.com/chapel-lang/chapel/releases/download/2.5.0/chapel-2.5.0-1.debian12.amd64.deb
+    output:
+        script = ''
+    shell:
+        """
+        # 1. Install Chapel
+        wget https://github.com/chapel-lang/chapel/releases/download/2.5.0/chapel-2.5.0-1.debian12.amd64.deb
+        sudo apt-get update
+        sudo dpkg -i ./chapel-2.5.0-1.debian12.amd64.deb
+        sudo apt-get -f install
+        export CHPL_HOME=/usr/share/chapel/2.5/
+        # wget https://github.com/chapel-lang/chapel/releases/download/2.5.0/chapel-2.5.0.tar.gz
+        # tar xzf chapel-2.5.0.tar.gz
+        # cd chapel-2.5.0
+        # source util/setchplenv.bash
+        # make
+        # chpl examples/hello3-datapar.chpl
+        
+        # 2. Clone CHGL
+        export CHPL_LLVM=system
+        git clone https://github.com/pnnl/chgl
+        cp ./scripts/chgl_contain.chpl ./chgl/
+        cp ./scripts/chgl_exact.chpl ./chgl/
+        cd chgl
+        # chpl --no-lifetime-checking --no-warnings <file>
+        chpl chgl_contains.chpl
+        chpl chgl_exact.chpl
         """
 
 # rule hypernetx_build:
