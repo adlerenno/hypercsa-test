@@ -27,6 +27,30 @@ Please open a request if you spot any errors or need advice on retesting.
 If you intend to include your own approach in the test environment, feel free to message us;
 we like to include it as well.
 
+## Approaches
+
+### CHGL
+
+A reviewer claimed that CHGL is the state of the art for hypergraph processing. 
+As to their current documentation (https://pnnl.github.io/chgl/installation_guide.html), CHGL needs Chapel 1.20.
+Chapel has to the time of my testing the version 2.5. CHGL does not compile anymore with this version.
+I get the following errors more than 100 times in total: 
+- unknown pragma "no doc"
+- syntax error: near '>' 
+- syntax error: near 'return'
+- error: operators cannot be declared without the operator keyword
+- error: attempt to redefine reserved word 'these'
+- syntax error: near '}'
+- error: cannot find module or enum named 'Memory'
+- In method 'isIncident':
+- error: cannot find 'badArgs' in module 'Debug'
+- error: statement references variable '_this' before it is defined
+
+Trying to build chapel-1.20 from scratch requires diskutil, which is deprecated since Python 3.10 and removed in Python 3.12.
+As I needed to install diskutil via my package manager, I could not get it to work with pyenv.
+Therefore, I claim CHGL deprecated here, because the effort to get it running is too high. 
+Also, it uses just an AdjacencyDict as data structure, something I already have included in my comparison.
+
 ## Data sets
 
 This project contains most of the tested data sets. They are publicly available, but not downloadable via script (if you know a way, we would be happy to include them not directly in this repository.) Thus, we provide a table of links here that point to the origin of these data sets.
